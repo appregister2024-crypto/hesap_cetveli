@@ -412,7 +412,7 @@
     padding-bottom: 10px;
   }
   
-  /* Daha orantılı kolon genişlikleri */
+  /* Daha orantılı kolon genişlikleri (Özet tablosu için Tarih kolonu eklendi) */
   .gg-row{ grid-template-columns: 100px 110px 1fr 130px 80px; }
   .kredi-card{
     padding: 18px 22px 18px 58px;
@@ -420,7 +420,9 @@
   }
   .kredi-card:last-child{ border-bottom:none; }
   .kira-row{ grid-template-columns: 1fr 130px 130px 80px; }
-  .ozet-row{ grid-template-columns: 1fr 130px 130px; }
+  
+  /* Özet satırı artık 4 kolonlu: İsim | Tarih | Tutar | Ekstra(Kalan) */
+  .ozet-row{ grid-template-columns: 1fr 130px 140px 100px; }
 
   .amount{ font-family: var(--font-mono); font-weight:600; text-align:right; }
   .amount.income{ color: var(--income); }
@@ -539,7 +541,7 @@
         overflow-x: hidden; 
     }
     
-    /* Yan Menü (Sidebar) Artık Ekranı Sündürmeyecek Kompakt Grid Yapısında */
+    /* Yan Menü (Sidebar) */
     .sidebar {
         position: sticky; top:0; z-index:50;
         display: grid;
@@ -575,7 +577,7 @@
     .nav { 
         grid-column: 1 / -1; grid-row: 2;
         display: flex; flex-direction: row; 
-        min-width: 0; /* İçeriğin tabloyu dışa itmesini durduran anahtar */
+        min-width: 0; 
         width: 100%;
         overflow-x: auto; 
         gap: 8px; 
@@ -613,7 +615,7 @@
     }
     .head-actions > * { 
         width: 100%; 
-        min-width: 0; /* Input/Select iç genişliklerinin taşmasını durdurur */
+        min-width: 0;
         box-sizing: border-box; 
     }
     
@@ -639,8 +641,9 @@
     /* Ortak Mobil Satır Hücreleri */
     .cell-main { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; word-wrap: break-word; }
     .cell-amt  { grid-column: 2; grid-row: 1; align-self: start; text-align: right; }
-    .cell-sub  { grid-column: 1 / -1; grid-row: 2; font-size: 12.5px; color: var(--muted); margin-top: 2px; min-width: 0;}
-    .cell-acts { grid-column: 1 / -1; grid-row: 3; }
+    .cell-info { grid-column: 1 / -1; grid-row: 2; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .cell-sub  { grid-column: 1 / -1; grid-row: 3; font-size: 12.5px; color: var(--muted); min-width: 0; text-align: left !important;}
+    .cell-acts { grid-column: 1 / -1; grid-row: 4; }
 
     /* Gelir/Gider Tablosuna Özel Sıralama */
     .cell-date { grid-column: 1 / -1; grid-row: 1; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
@@ -1079,13 +1082,19 @@
       krediWrap.innerHTML = emptyState('Kredi kaydı yok', 'Krediler sekmesinden kredi ekleyerek takibe başlayabilirsin.');
     } else {
       krediWrap.innerHTML =
-        `<div class="ledger-row head ozet-row"><div>Kredi</div><div>Aylık Taksit</div><div>Kalan Taksit</div></div>` +
+        `<div class="ledger-row head ozet-row">
+            <div>Kredi</div>
+            <div>Kredi Tarihi</div>
+            <div style="text-align:right;">Aylık Taksit</div>
+            <div style="text-align:right;">Kalan Taksit</div>
+         </div>` +
         loanEntries.map(([, l]) => {
           const {remaining} = loanRemaining(l);
           return `<div class="ledger-row ozet-row">
             <div class="cell-main"><strong>${escapeHtml(l.name)}</strong></div>
+            <div class="cell-info">${l.date ? formatDate(l.date) : '—'}</div>
             <div class="amount cell-amt expense">${formatCurrency(l.monthlyPayment)}</div>
-            <div class="cell-sub">${remaining} taksit</div>
+            <div class="cell-sub" style="text-align:right;">${remaining} taksit</div>
           </div>`;
         }).join('');
     }
@@ -1097,12 +1106,18 @@
       kiraWrap.innerHTML = emptyState('Kira geliri yok', 'Kira Gelirleri sekmesinden mülk ekleyebilirsin.');
     } else {
       kiraWrap.innerHTML =
-        `<div class="ledger-row head ozet-row"><div>Kiracı / Mülk</div><div>Aylık Tutar</div><div></div></div>` +
+        `<div class="ledger-row head ozet-row">
+            <div>Kiracı / Mülk</div>
+            <div>Ödeme Günü</div>
+            <div style="text-align:right;">Aylık Tutar</div>
+            <div></div>
+         </div>` +
         rentalEntries.map(([, r]) => `<div class="ledger-row ozet-row">
             <div class="cell-main">
               <strong>${escapeHtml(r.tenant || 'Belirtilmedi')}</strong>
               <div style="font-size:12px;color:var(--muted);">${escapeHtml(r.property)}</div>
             </div>
+            <div class="cell-info">${r.paymentDay ? r.paymentDay + '. Gün' : '—'}</div>
             <div class="amount cell-amt income">${formatCurrency(r.amount)}</div>
             <div class="cell-sub"></div>
           </div>`).join('');
