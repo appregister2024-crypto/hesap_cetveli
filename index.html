@@ -461,7 +461,7 @@
   /* Loan card details */
   .kredi-top{ display:flex; justify-content:space-between; align-items:flex-start; gap: 10px; flex-wrap:wrap; margin-bottom: 12px; }
   .kredi-name{ font-family: var(--font-display); font-size: 17px; color: var(--cover); font-weight:600; margin:0; }
-  .kredi-note{ font-size: 12.5px; color: var(--muted); margin-top:2px; }
+  .kredi-note{ font-size: 12.5px; color: var(--muted); margin-top:4px; display:flex; align-items:center; gap: 6px;}
   .kredi-stats{ display:grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 12px; margin-bottom: 12px; }
   .kredi-stat-label{ font-family: var(--font-mono); font-size: 10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); margin-bottom:3px;}
   .kredi-stat-value{ font-family: var(--font-mono); font-weight:600; font-size:15px; color:var(--ink); }
@@ -822,7 +822,8 @@
   const REMEMBER_KEY = "hesap_cetveli_remember";
 
   const GELIR_KATEGORILERI = ["Maaş","Kira Geliri","Ek Gelir","Yatırım Getirisi","Diğer Gelir"];
-  const GIDER_KATEGORILERI = ["Fatura","Market","Ulaşım","Sağlık","Eğitim","Eğlence","Kredi Taksidi","Diğer Gider"];
+  // Kredi Kartı kategorisi eklendi
+  const GIDER_KATEGORILERI = ["Fatura","Market","Ulaşım","Sağlık","Eğitim","Eğlence","Kredi Taksidi","Kredi Kartı","Diğer Gider"];
 
   let state = {
     userKey: null,
@@ -1185,7 +1186,11 @@
           <div class="kredi-top">
             <div>
               <p class="kredi-name">${escapeHtml(l.name)}</p>
-              ${l.note ? `<div class="kredi-note">${escapeHtml(l.note)}</div>` : ''}
+              <div class="kredi-note">
+                ${l.date ? `<span style="color:var(--cover); font-weight:500;">${formatDate(l.date)}</span>` : ''}
+                ${l.date && l.note ? '<span style="opacity: 0.5;">&bull;</span>' : ''}
+                ${l.note ? escapeHtml(l.note) : ''}
+              </div>
             </div>
             <div class="row-actions">
               <button class="icon-btn" data-edit="loan" data-id="${id}" title="Düzenle">✎</button>
@@ -1373,6 +1378,8 @@
   function openLoanModal(id){
     const l = id ? state.loans[id] : null;
     const isEdit = !!l;
+    
+    // Kredi Tarihi Eklendi
     openModalWith(`
       <h3>${isEdit ? 'Krediyi Düzenle' : 'Yeni Kredi Ekle'}</h3>
       <form id="loanForm">
@@ -1382,17 +1389,23 @@
         </div>
         <div class="field-row">
           <div class="field">
+            <label for="loanDate">Kredi Tarihi</label>
+            <input type="date" id="loanDate" value="${l && l.date ? l.date : new Date().toISOString().slice(0,10)}" required>
+          </div>
+          <div class="field">
             <label for="loanMonthly">Aylık Taksit (₺)</label>
             <input type="number" id="loanMonthly" min="0" step="0.01" value="${l ? l.monthlyPayment : ''}" required>
           </div>
+        </div>
+        <div class="field-row">
           <div class="field">
             <label for="loanTotalCount">Toplam Taksit Sayısı</label>
             <input type="number" id="loanTotalCount" min="1" step="1" value="${l ? l.totalInstallments : ''}" required>
           </div>
-        </div>
-        <div class="field">
-          <label for="loanPaidCount">Ödenen Taksit Sayısı</label>
-          <input type="number" id="loanPaidCount" min="0" step="1" value="${l ? (l.paidInstallments||0) : 0}" required>
+          <div class="field">
+            <label for="loanPaidCount">Ödenen Taksit Sayısı</label>
+            <input type="number" id="loanPaidCount" min="0" step="1" value="${l ? (l.paidInstallments||0) : 0}" required>
+          </div>
         </div>
         <div class="field">
           <label for="loanNote">Not (opsiyonel)</label>
@@ -1411,13 +1424,16 @@
       const total = Number($('loanTotalCount').value);
       let paid = Number($('loanPaidCount').value);
       if(paid > total) paid = total;
+      
       const payload = {
         name: $('loanName').value.trim(),
+        date: $('loanDate').value,
         monthlyPayment: Number($('loanMonthly').value),
         totalInstallments: total,
         paidInstallments: paid,
         note: $('loanNote').value.trim()
       };
+      
       try{
         if(isEdit){
           await dbPatch(`users/${state.userKey}/loans/${id}`, payload);
