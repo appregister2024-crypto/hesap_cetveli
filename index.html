@@ -266,6 +266,12 @@
     padding: 30px 38px 60px;
     min-width: 0;
   }
+  /* Ortalanmış ve maksimum genişlik verilmiş kapsayıcı */
+  .view {
+    max-width: 1040px; 
+    margin: 0 auto;
+    width: 100%;
+  }
   .topbar{
     display:flex;
     align-items:baseline;
@@ -290,8 +296,8 @@
   /* ---------- Cards / summary ---------- */
   .card-row{
     display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
     margin-bottom: 28px;
   }
   .stat-card{
@@ -405,14 +411,16 @@
     padding-top: 10px;
     padding-bottom: 10px;
   }
-  .gg-row{ grid-template-columns: 100px 110px 1fr 130px 70px; }
+  
+  /* Daha orantılı kolon genişlikleri */
+  .gg-row{ grid-template-columns: 100px 110px 1fr 130px 80px; }
   .kredi-card{
     padding: 18px 22px 18px 58px;
     border-bottom: 1px solid var(--rule);
   }
   .kredi-card:last-child{ border-bottom:none; }
-  .kira-row{ grid-template-columns: 1.5fr 130px 110px 70px; }
-  .ozet-row{ grid-template-columns: 1fr 130px 100px; }
+  .kira-row{ grid-template-columns: 1fr 130px 130px 80px; }
+  .ozet-row{ grid-template-columns: 1fr 130px 130px; }
 
   .amount{ font-family: var(--font-mono); font-weight:600; text-align:right; }
   .amount.income{ color: var(--income); }
@@ -545,7 +553,7 @@
     .sidebar-user{ display:none; }
     .btn-logout{ padding: 8px 12px; font-size: 12px; width: auto;}
 
-    .content{ padding: 20px 14px 60px; }
+    .content{ padding: 20px 12px 60px; }
 
     .card-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .stat-card { padding: 14px 12px; }
@@ -559,19 +567,23 @@
     .ledger-row.head{ display:none; }
     .ledger-row {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px 12px;
-      padding: 14px 16px;
+      /* minmax(0,1fr) içeriğin gridi taşırmasını ve sağa kaydırma yaratmasını engeller */
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 10px;
+      padding: 14px 12px;
       border-bottom: 1px solid var(--rule);
       align-items: center;
     }
 
-    .amount{ text-align:right; font-size: 16px; font-weight: 700; }
+    .amount{ text-align:right; font-size: 15px; font-weight: 700; }
     .row-actions{ grid-column: 1 / -1; justify-content:flex-start; margin-top:6px; }
 
     /* Custom Mobile Cells */
-    .cell-main { grid-column: 1; display: flex; flex-direction: column; gap: 2px; }
-    .cell-amt { grid-column: 2; align-self: start; }
+    .cell-main { 
+      grid-column: 1; display: flex; flex-direction: column; gap: 2px; 
+      min-width: 0; word-wrap: break-word; overflow-wrap: break-word; /* Uzun kelimeleri böler */
+    }
+    .cell-amt { grid-column: 2; align-self: start; text-align: right; }
     .cell-sub { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); margin-top: 2px;}
     .cell-acts { grid-column: 1 / -1; }
 
@@ -580,7 +592,7 @@
     .cell-type { grid-column: 1; margin-bottom: 4px; }
     .cell-desc { grid-column: 1; font-weight: 500; font-size: 14.5px; }
 
-    .kredi-card{ padding: 16px 14px; }
+    .kredi-card{ padding: 16px 12px; }
     .kredi-stats { grid-template-columns: 1fr 1fr; gap: 12px 8px; }
     .field-row{ grid-template-columns:1fr; gap:12px; }
   }
