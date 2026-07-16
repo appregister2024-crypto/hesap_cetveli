@@ -8,1332 +8,1417 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
---cover: #16302A;
---cover-light: #1F4038;
---paper: #F3EFDE;
---paper-2: #ECE6D0;
---ink: #1B2A22;
---muted: #6B6656;
---rule: #C9C2A6;
---rule-strong: #A8BBA0;
---gold: #B8892B;
---gold-light: #D9AE55;
---income: #2F7D4F;
---income-bg: #E4EFE6;
---expense: #B4472B;
---expense-bg: #F5E7E1;
---radius: 10px;
---shadow: 0 8px 24px rgba(22,48,42,0.18);
---font-display: 'Fraunces', serif;
---font-body: 'Inter', sans-serif;
---font-mono: 'IBM Plex Mono', monospace;
-}
-*{box-sizing:border-box;}
-* *html,body{margin:0;padding:0;}
-* *body{
-* *font-family: var(--font-body);
-* *background: var(--cover);
-* *color: var(--ink);
-* *min-height: 100vh;
-* *-webkit-font-smoothing: antialiased;
-* *}
-* *.hidden{display:none !important;}
-* *button{font-family: inherit; cursor:pointer;}
-* *input, select{font-family: inherit;}
-* *a{color: inherit;}
-* *:focus-visible{
-* *outline: 3px solid var(--gold-light);
-* *outline-offset: 2px;
-* *}
-* *@media (prefers-reduced-motion: reduce){
-** {animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
-}
-/* ---------- Login screen ---------- */
-* *.login-screen{
-* *min-height: 100vh;
-* *display:flex;
-* *align-items:center;
-* *justify-content:center;
-* *padding: 32px 20px;
-* *background:
-* *radial-gradient(circle at 20% 15%, rgba(217,174,85,0.10), transparent 45%),
-* *var(--cover);
-* *}
-* *.passbook{
-* *width: 100%;
-* *max-width: 420px;
-* *background: var(--paper);
-* *border-radius: var(--radius);
-* *box-shadow: var(--shadow);
-* *position: relative;
-* *overflow: hidden;
-* *border: 1px solid rgba(22,48,42,0.15);
-* *}
-* *.passbook::before{
-* *content:"";
-* *position:absolute;
-* *left:0; top:0; bottom:0;
-* *width: 34px;
-* *background: repeating-linear-gradient(
-* *180deg,
-* *var(--cover) 0px, var(--cover) 10px,
-* *transparent 10px, transparent 20px
-* *);
-* *opacity: 0.9;
-* *}
-* *.passbook-inner{
-* *padding: 40px 34px 34px 60px;
-* *}
-* *.passbook-eyebrow{
-* *font-family: var(--font-mono);
-* *font-size: 11px;
-* *letter-spacing: 0.16em;
-* *text-transform: uppercase;
-* *color: var(--gold);
-* *margin: 0 0 6px;
-* *}
-* *.passbook-title{
-* *font-family: var(--font-display);
-* *font-size: 34px;
-* *font-weight: 600;
-* *margin: 0 0 4px;
-* *color: var(--cover);
-* *line-height: 1.1;
-* *}
-* *.passbook-sub{
-* *font-size: 13.5px;
-* *color: var(--muted);
-* *margin: 0 0 26px;
-* *line-height: 1.5;
-* *}
-* *.field{
-* *margin-bottom: 16px;
-* *}
-* *.field label{
-* *display:block;
-* *font-size: 12.5px;
-* *font-weight: 600;
-* *color: var(--cover);
-* *margin-bottom: 6px;
-* *letter-spacing: 0.01em;
-* *}
-* *.field input{
-* *width: 100%;
-* *padding: 11px 12px;
-* *border: 1.5px solid var(--rule-strong);
-* *border-radius: 6px;
-* *background: #fff;
-* *font-size: 15px;
-* *color: var(--ink);
-* *}
-* *.field input:focus{
-* *border-color: var(--gold);
-* *}
-* *.field-hint{
-* *font-size: 11.5px;
-* *color: var(--muted);
-* *margin-top: 5px;
-* *}
-* *.remember-row{
-* *display:flex;
-* *align-items:center;
-* *gap: 8px;
-* *margin: 4px 0 22px;
-* *font-size: 13.5px;
-* *color: var(--ink);
-* *}
-* *.remember-row input{width:15px; height:15px;}
-* *.btn-primary{
-* *width: 100%;
-* *padding: 13px 16px;
-* *background: var(--cover);
-* *color: var(--paper);
-* *border: none;
-* *border-radius: 7px;
-* *font-size: 15px;
-* *font-weight: 600;
-* *letter-spacing: 0.01em;
-* *transition: background 0.15s ease, transform 0.1s ease;
-* *}
-* *.btn-primary:hover{ background: var(--cover-light); }
-* *.btn-primary:active{ transform: translateY(1px); }
-* *.btn-primary:disabled{ opacity:0.6; cursor:progress; }
-* *.login-error{
-* *background: var(--expense-bg);
-* *color: var(--expense);
-* *border: 1px solid rgba(180,71,43,0.3);
-* *padding: 10px 12px;
-* *border-radius: 6px;
-* *font-size: 13px;
-* *margin-bottom: 16px;
-* *}
-* *.login-footer-note{
-* *text-align:center;
-* *color: rgba(243,239,222,0.55);
-* *font-size: 12px;
-* *margin-top: 18px;
-* *font-family: var(--font-mono);
-* *}
-* */
-/* ---------- Dashboard shell ---------- */
-* *.dashboard{
-* *min-height: 100vh;
-* *display:grid;
-* *grid-template-columns: 240px 1fr;
-* *}
-* *.sidebar{
-* *background: var(--cover);
-* *color: var(--paper);
-* *padding: 26px 18px;
-* *display:flex;
-* *flex-direction:column;
-* *position: sticky;
-* *top:0;
-* *height: 100vh;
-* *}
-* *.brand{
-* *font-family: var(--font-display);
-* *font-size: 21px;
-* *font-weight: 600;
-* *letter-spacing: 0.01em;
-* *margin-bottom: 2px;
-* *}
-* *.brand-tag{
-* *font-family: var(--font-mono);
-* *font-size: 10.5px;
-* *color: var(--gold-light);
-* *letter-spacing: 0.14em;
-* *text-transform: uppercase;
-* *margin-bottom: 30px;
-* *}
-* *.nav{
-* *display:flex;
-* *flex-direction:column;
-* *gap: 3px;
-* *flex: 1;
-* *}
-* *.nav-btn{
-* *display:flex;
-* *align-items:center;
-* *gap: 10px;
-* *text-align:left;
-* *background: transparent;
-* *border: none;
-* *color: rgba(243,239,222,0.75);
-* *padding: 11px 12px;
-* *border-radius: 7px;
-* *font-size: 14.5px;
-* *font-weight: 500;
-* *transition: background 0.15s ease, color 0.15s ease;
-* *}
-* *.nav-btn .num{
-* *font-family: var(--font-mono);
-* *font-size: 11px;
-* *color: var(--gold-light);
-* *width: 16px;
-* *}
-* *.nav-btn:hover{ background: rgba(243,239,222,0.08); color: var(--paper); }
-* *.nav-btn.active{ background: var(--gold); color: var(--cover); font-weight:600; }
-* *.nav-btn.active .num{ color: var(--cover); }
-* *.sidebar-footer{
-* *border-top: 1px solid rgba(243,239,222,0.15);
-* *padding-top: 16px;
-* *margin-top: 16px;
-* *}
-* *.sidebar-user{
-* *font-size: 13px;
-* *color: rgba(243,239,222,0.6);
-* *margin-bottom: 10px;
-* *}
-* *.sidebar-user strong{ color: var(--paper); display:block; font-size:14.5px; }
-* *.btn-logout{
-* *width:100%;
-* *background: transparent;
-* *border: 1px solid rgba(243,239,222,0.3);
-* *color: rgba(243,239,222,0.85);
-* *padding: 9px;
-* *border-radius: 6px;
-* *font-size: 13px;
-* *}
-* *.btn-logout:hover{ background: rgba(243,239,222,0.08); }
-* *.content{
-* *background: var(--paper);
-* *padding: 30px 38px 60px;
-* *min-width: 0;
-* *}
-* *.topbar{
-* *display:flex;
-* *align-items:baseline;
-* *justify-content:space-between;
-* *margin-bottom: 24px;
-* *flex-wrap:wrap;
-* *gap: 10px;
-* *}
-* *.topbar h1{
-* *font-family: var(--font-display);
-* *font-size: 26px;
-* *font-weight: 600;
-* *margin: 0;
-* *color: var(--cover);
-* *}
-* *.topbar-sub{
-* *font-size: 13px;
-* *color: var(--muted);
-* *font-family: var(--font-mono);
-* *}
-* */* ---------- Cards / summary ---------- */
-* *.card-row{
-* *display:grid;
-* *grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-* *gap: 14px;
-* *margin-bottom: 28px;
-* *}
-* *.stat-card{
-* *background: #fff;
-* *border: 1px solid var(--rule);
-* *border-radius: var(--radius);
-* *padding: 16px 18px;
-* *position: relative;
-* *}
-* *.stat-card::before{
-* *content:"";
-* *position:absolute;
-* *left:0; top: 14px; bottom: 14px;
-* *width: 3px;
-* *background: var(--rule-strong);
-* *border-radius: 2px;
-* *}
-* *.stat-card.income::before{ background: var(--income); }
-* *.stat-card.expense::before{ background: var(--expense); }
-* *[stat-card.net]::before{ background: var(--gold); }
-* *.stat-label{
-* *font-size: 11.5px;
-* *text-transform: uppercase;
-* *letter-spacing: 0.08em;
-* *color: var(--muted);
-* *font-family: var(--font-mono);
-* *margin: 0 0 8px;
-* *}
-* *.stat-value{
-* *font-family: var(--font-mono);
-* *font-size: 22px;
-* *font-weight: 600;
-* *color: var(--ink);
-* *margin:0;
-* *}
-* *.stat-value.income{ color: var(--income); }
-* *.stat-value.expense{ color: var(--expense); }
-* */* ---------- Section header / actions ---------- */
-* *.section-head{
-* *display:flex;
-* *align-items:center;
-* *justify-content:space-between;
-* *margin-bottom: 16px;
-* *flex-wrap: wrap;
-* *gap: 10px;
-* *}
-* *.section-head h2{
-* *font-family: var(--font-display);
-* *font-size: 20px;
-* *margin:0;
-* *color: var(--cover);
-* *}
-* *.head-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-* *.btn{
-* *padding: 9px 16px;
-* *border-radius: 6px;
-* *font-size: 13.5px;
-* *font-weight: 600;
-* *border: 1.5px solid var(--cover);
-* *background: var(--cover);
-* *color: var(--paper);
-* *}
-* *.btn:hover{ background: var(--cover-light); }
-* *.btn.secondary{
-* *background: transparent;
-* *color: var(--cover);
-* *}
-* *.btn.secondary:hover{ background: rgba(22,48,42,0.06); }
-* *.btn.small{ padding: 6px 10px; font-size: 12px; }
-* *select.filter, input.filter{
-* *padding: 8px 10px;
-* *border: 1.5px solid var(--rule-strong);
-* *border-radius: 6px;
-* *background:#fff;
-* *font-size: 13px;
-* *}
-* */* ---------- Ledger table ---------- */
-* *.ledger{
-* *background: #fff;
-* *border: 1px solid var(--rule);
-* *border-radius: var(--radius);
-* *overflow: hidden;
-* *position: relative;
-* *}
-* *.ledger::before{
-* *content:"";
-* *position:absolute;
-* *left: 46px; top:0; bottom:0;
-* *width: 1px;
-* *background: rgba(180,71,43,0.25);
-* *pointer-events:none;
-* *}
-* *.ledger-row{
-* *display:grid;
-* *align-items:center;
-* *padding: 13px 18px 13px 58px;
-* *border-bottom: 1px solid var(--rule);
-* *gap: 10px;
-* *font-size: 14px;
-* *}
-* *.ledger-row:last-child{ border-bottom:none; }
-* *.ledger-row.head{
-* *background: var(--paper-2);
-* *font-family: var(--font-mono);
-* *font-size: 10.5px;
-* *text-transform: uppercase;
-* *letter-spacing: 0.06em;
-* *color: var(--muted);
-* *padding-top: 10px;
-* *padding-bottom: 10px;
-* *}
-* *.gg-row{ grid-template-columns: 100px 110px 1fr 130px 70px; }
-* *.kredi-card{
-* *padding: 18px 22px 18px 58px;
-* *border-bottom: 1px solid var(--rule);
-* *}
-* *.kredi-card:last-child{ border-bottom:none; }
-* *.kira-row{ grid-template-columns: 1.3fr 1fr 130px 110px 70px; }
-* *.amount{ font-family: var(--font-mono); font-weight:600; text-align:right; }
-* *.amount.income{ color: var(--income); }
-* *.amount.expense{ color: var(--expense); }
-* *.tag{
-* *display:inline-block;
-* *padding: 3px 9px;
-* *border-radius: 20px;
-* *font-size: 11.5px;
-* *font-weight: 600;
-* *background: var(--paper-2);
-* *color: var(--muted);
-* *}
-* *.tag.income{ background: var(--income-bg); color: var(--income); }
-* *.tag.expense{ background: var(--expense-bg); color: var(--expense); }
-* *.row-actions{ display:flex; gap:6px; justify-content:flex-end; }
-* *.icon-btn{
-* *background: transparent;
-* *border: 1px solid var(--rule-strong);
-* *border-radius: 5px;
-* *width: 28px; height:28px;
-* *font-size: 13px;
-* *color: var(--muted);
-* *display:flex; align-items:center; justify-content:center;
-* *padding:0;
-* *}
-* *.icon-btn:hover{ border-color: var(--cover); color: var(--cover); }
-* *.icon-btn.danger:hover{ border-color: var(--expense); color: var(--expense); }
-* *.empty-state{
-* *padding: 46px 30px;
-* *text-align:center;
-* *color: var(--muted);
-* *font-size: 14px;
-* *}
-* *.empty-state strong{ display:block; color: var(--cover); font-family: var(--font-display); font-size:18px; margin-bottom:6px; }
-* */* Loan card details */
-* *.kredi-top{ display:flex; justify-content:space-between; align-items:flex-start; gap: 10px; flex-wrap:wrap; margin-bottom: 12px; }
-* *.kredi-name{ font-family: var(--font-display); font-size: 17px; color: var(--cover); font-weight:600; margin:0; }
-* *.kredi-note{ font-size: 12.5px; color: var(--muted); margin-top:2px; }
-* *.kredi-stats{ display:grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 12px; margin-bottom: 12px; }
-* *.kredi-stat-label{ font-family: var(--font-mono); font-size: 10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); margin-bottom:3px;}
-* *.kredi-stat-value{ font-family: var(--font-mono); font-weight:600; font-size:15px; color:var(--ink); }
-* *.progress-track{
-* *height: 8px;
-* *background: var(--paper-2);
-* *border-radius: 6px;
-* *overflow:hidden;
-* *margin-bottom: 6px;
-* *}
-* *.progress-fill{
-* *height:100%;
-* *background: var(--gold);
-* *border-radius: 6px;
-* *transition: width 0.3s ease;
-* *}
-* *.progress-label{ font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); }
-* *.kredi-actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-* */* ---------- Modal ---------- */
-* *.modal-overlay{
-* *position: fixed; inset:0;
-* *background: rgba(22,48,42,0.55);
-* *display:flex; align-items:center; justify-content:center;
-* *padding: 20px;
-* *z-index: 100;
-* *}
-* *.modal{
-* *background: var(--paper);
-* *border-radius: var(--radius);
-* *width: 100%;
-* *max-width: 440px;
-* *max-height: 90vh;
-* *overflow-y:auto;
-* *box-shadow: var(--shadow);
-* *padding: 28px 26px;
-* *}
-* *.modal h3{
-* *font-family: var(--font-display);
-* *font-size: 20px;
-* *color: var(--cover);
-* *margin: 0 0 18px;
-* *}
-* *.modal-actions{ display:flex; gap:10px; margin-top: 6px; }
-* *.modal-actions .btn{ flex:1; }
-* *.field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-* */* ---------- Toast ---------- */
-* *.toast{
-* *position: fixed;
-* *bottom: 22px; left: 50%;
-* *transform: translateX(-50%);
-* *background: var(--cover);
-* *color: var(--paper);
-* *padding: 12px 20px;
-* *border-radius: 8px;
-* *font-size: 13.5px;
-* *box-shadow: var(--shadow);
-* *z-index: 200;
-* *max-width: 90vw;
-* *}
-* *.toast.err{ background: var(--expense); }
-* */* ---------- Responsive ---------- */
-* *@media (max-width: 860px){
-* *.dashboard{ grid-template-columns: 1fr; }
-* *.sidebar{
-* *position: static; height:auto;
-* *flex-direction:row; align-items:center;
-* *padding: 14px 16px; gap: 14px;
-* *}
-* *.brand-tag{ display:none; }
-* *.brand{ margin-bottom:0; font-size:17px; }
-* *.nav{ flex-direction:row; flex:1; overflow-x:auto; gap:4px; }
-* *.nav-btn{ white-space:nowrap; padding: 8px 10px; font-size:13px; }
-* *.sidebar-footer{ border:none; padding:0; margin:0; display:flex; align-items:center; gap:8px;}
-* *.sidebar-user{ display:none; }
-* *.btn-logout{ width:auto; padding: 8px 12px; }
-* *.content{ padding: 22px 16px 50px; }
-* *.gg-row{ grid-template-columns: 1fr; grid-template-areas: "a" "b" "c" "d" "e"; gap:4px; padding: 14px 16px 14px 30px;}
-* *.ledger::before{ left: 18px; }
-* *.kredi-card{ padding: 16px 16px 16px 30px; }
-* *.kira-row{ grid-template-columns: 1fr; padding: 14px 16px 14px 30px; }
-* *.ledger-row.head{ display:none; }
-* *.amount{ text-align:left; }
-* *.row-actions{ justify-content:flex-start; margin-top:6px; }
-* *.field-row{ grid-template-columns:1fr; }
-* *}
-* */style>
+  :root{
+    --cover: #16302A;
+    --cover-light: #1F4038;
+    --paper: #F3EFDE;
+    --paper-2: #ECE6D0;
+    --ink: #1B2A22;
+    --muted: #6B6656;
+    --rule: #C9C2A6;
+    --rule-strong: #A8BBA0;
+    --gold: #B8892B;
+    --gold-light: #D9AE55;
+    --income: #2F7D4F;
+    --income-bg: #E4EFE6;
+    --expense: #B4472B;
+    --expense-bg: #F5E7E1;
+    --radius: 10px;
+    --shadow: 0 8px 24px rgba(22,48,42,0.18);
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: var(--font-body);
+    background: var(--cover);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .hidden{display:none !important;}
+  button{font-family: inherit; cursor:pointer;}
+  input, select{font-family: inherit;}
+  a{color: inherit;}
+
+  :focus-visible{
+    outline: 3px solid var(--gold-light);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- Login screen ---------- */
+  .login-screen{
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 20px;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(217,174,85,0.10), transparent 45%),
+      var(--cover);
+  }
+  .passbook{
+    width: 100%;
+    max-width: 420px;
+    background: var(--paper);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(22,48,42,0.15);
+  }
+  .passbook::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width: 34px;
+    background: repeating-linear-gradient(
+      180deg,
+      var(--cover) 0px, var(--cover) 10px,
+      transparent 10px, transparent 20px
+    );
+    opacity: 0.9;
+  }
+  .passbook-inner{
+    padding: 40px 34px 34px 60px;
+  }
+  .passbook-eyebrow{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+  .passbook-title{
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--cover);
+    line-height: 1.1;
+  }
+  .passbook-sub{
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0 0 26px;
+    line-height: 1.5;
+  }
+  .field{
+    margin-bottom: 16px;
+  }
+  .field label{
+    display:block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--cover);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+  .field input{
+    width: 100%;
+    padding: 11px 12px;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .field input:focus{
+    border-color: var(--gold);
+  }
+  .field-hint{
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+  .remember-row{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    margin: 4px 0 22px;
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+  .remember-row input{width:15px; height:15px;}
+  .btn-primary{
+    width: 100%;
+    padding: 13px 16px;
+    background: var(--cover);
+    color: var(--paper);
+    border: none;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary:hover{ background: var(--cover-light); }
+  .btn-primary:active{ transform: translateY(1px); }
+  .btn-primary:disabled{ opacity:0.6; cursor:progress; }
+  .login-error{
+    background: var(--expense-bg);
+    color: var(--expense);
+    border: 1px solid rgba(180,71,43,0.3);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .login-footer-note{
+    text-align:center;
+    color: rgba(243,239,222,0.55);
+    font-size: 12px;
+    margin-top: 18px;
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- Dashboard shell ---------- */
+  .dashboard{
+    min-height: 100vh;
+    display:grid;
+    grid-template-columns: 240px 1fr;
+  }
+  .sidebar{
+    background: var(--cover);
+    color: var(--paper);
+    padding: 26px 18px;
+    display:flex;
+    flex-direction:column;
+    position: sticky;
+    top:0;
+    height: 100vh;
+  }
+  .brand{
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin-bottom: 2px;
+  }
+  .brand-tag{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--gold-light);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap: 3px;
+    flex: 1;
+  }
+  .nav-btn{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    text-align:left;
+    background: transparent;
+    border: none;
+    color: rgba(243,239,222,0.75);
+    padding: 11px 12px;
+    border-radius: 7px;
+    font-size: 14.5px;
+    font-weight: 500;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-btn .num{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gold-light);
+    width: 16px;
+  }
+  .nav-btn:hover{ background: rgba(243,239,222,0.08); color: var(--paper); }
+  .nav-btn.active{ background: var(--gold); color: var(--cover); font-weight:600; }
+  .nav-btn.active .num{ color: var(--cover); }
+  .sidebar-footer{
+    border-top: 1px solid rgba(243,239,222,0.15);
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+  .sidebar-user{
+    font-size: 13px;
+    color: rgba(243,239,222,0.6);
+    margin-bottom: 10px;
+  }
+  .sidebar-user strong{ color: var(--paper); display:block; font-size:14.5px; }
+  .btn-logout{
+    width:100%;
+    background: transparent;
+    border: 1px solid rgba(243,239,222,0.3);
+    color: rgba(243,239,222,0.85);
+    padding: 9px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .btn-logout:hover{ background: rgba(243,239,222,0.08); }
+
+  .content{
+    background: var(--paper);
+    padding: 30px 38px 60px;
+    min-width: 0;
+  }
+  .topbar{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom: 24px;
+    flex-wrap:wrap;
+    gap: 10px;
+  }
+  .topbar h1{
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--cover);
+  }
+  .topbar-sub{
+    font-size: 13px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+
+  /* ---------- Cards / summary ---------- */
+  .card-row{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card{
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+  }
+  .stat-card::before{
+    content:"";
+    position:absolute;
+    left:0; top: 14px; bottom: 14px;
+    width: 3px;
+    background: var(--rule-strong);
+    border-radius: 2px;
+  }
+  .stat-card.income::before{ background: var(--income); }
+  .stat-card.expense::before{ background: var(--expense); }
+  .stat-card.net::before{ background: var(--gold); }
+  .stat-label{
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin: 0 0 8px;
+  }
+  .stat-value{
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    margin:0;
+  }
+  .stat-value.income{ color: var(--income); }
+  .stat-value.expense{ color: var(--expense); }
+
+  /* ---------- Section header / actions ---------- */
+  .section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .section-head h2{
+    font-family: var(--font-display);
+    font-size: 20px;
+    margin:0;
+    color: var(--cover);
+  }
+  .head-actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .btn{
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1.5px solid var(--cover);
+    background: var(--cover);
+    color: var(--paper);
+  }
+  .btn:hover{ background: var(--cover-light); }
+  .btn.secondary{
+    background: transparent;
+    color: var(--cover);
+  }
+  .btn.secondary:hover{ background: rgba(22,48,42,0.06); }
+  .btn.small{ padding: 6px 10px; font-size: 12px; }
+  select.filter, input.filter{
+    padding: 8px 10px;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 6px;
+    background:#fff;
+    font-size: 13px;
+  }
+
+  /* ---------- Ledger table ---------- */
+  .ledger{
+    background: #fff;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+  .ledger::before{
+    content:"";
+    position:absolute;
+    left: 46px; top:0; bottom:0;
+    width: 1px;
+    background: rgba(180,71,43,0.25);
+    pointer-events:none;
+  }
+  .ledger-row{
+    display:grid;
+    align-items:center;
+    padding: 13px 18px 13px 58px;
+    border-bottom: 1px solid var(--rule);
+    gap: 10px;
+    font-size: 14px;
+  }
+  .ledger-row:last-child{ border-bottom:none; }
+  .ledger-row.head{
+    background: var(--paper-2);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .gg-row{ grid-template-columns: 100px 110px 1fr 130px 70px; }
+  .kredi-card{
+    padding: 18px 22px 18px 58px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .kredi-card:last-child{ border-bottom:none; }
+  .kira-row{ grid-template-columns: 1.5fr 130px 110px 70px; }
+  .ozet-row{ grid-template-columns: 1fr 130px 100px; }
+
+  .amount{ font-family: var(--font-mono); font-weight:600; text-align:right; }
+  .amount.income{ color: var(--income); }
+  .amount.expense{ color: var(--expense); }
+  .tag{
+    display:inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 600;
+    background: var(--paper-2);
+    color: var(--muted);
+  }
+  .tag.income{ background: var(--income-bg); color: var(--income); }
+  .tag.expense{ background: var(--expense-bg); color: var(--expense); }
+  .row-actions{ display:flex; gap:6px; justify-content:flex-end; }
+  .icon-btn{
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    border-radius: 5px;
+    width: 28px; height:28px;
+    font-size: 13px;
+    color: var(--muted);
+    display:flex; align-items:center; justify-content:center;
+    padding:0;
+  }
+  .icon-btn:hover{ border-color: var(--cover); color: var(--cover); }
+  .icon-btn.danger:hover{ border-color: var(--expense); color: var(--expense); }
+
+  .empty-state{
+    padding: 46px 30px;
+    text-align:center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .empty-state strong{ display:block; color: var(--cover); font-family: var(--font-display); font-size:18px; margin-bottom:6px; }
+
+  /* Loan card details */
+  .kredi-top{ display:flex; justify-content:space-between; align-items:flex-start; gap: 10px; flex-wrap:wrap; margin-bottom: 12px; }
+  .kredi-name{ font-family: var(--font-display); font-size: 17px; color: var(--cover); font-weight:600; margin:0; }
+  .kredi-note{ font-size: 12.5px; color: var(--muted); margin-top:2px; }
+  .kredi-stats{ display:grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 12px; margin-bottom: 12px; }
+  .kredi-stat-label{ font-family: var(--font-mono); font-size: 10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); margin-bottom:3px;}
+  .kredi-stat-value{ font-family: var(--font-mono); font-weight:600; font-size:15px; color:var(--ink); }
+  .progress-track{
+    height: 8px;
+    background: var(--paper-2);
+    border-radius: 6px;
+    overflow:hidden;
+    margin-bottom: 6px;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--gold);
+    border-radius: 6px;
+    transition: width 0.3s ease;
+  }
+  .progress-label{ font-size: 11.5px; color: var(--muted); font-family: var(--font-mono); }
+  .kredi-actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position: fixed; inset:0;
+    background: rgba(22,48,42,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .modal{
+    background: var(--paper);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 440px;
+    max-height: 90vh;
+    overflow-y:auto;
+    box-shadow: var(--shadow);
+    padding: 28px 26px;
+  }
+  .modal h3{
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--cover);
+    margin: 0 0 18px;
+  }
+  .modal-actions{ display:flex; gap:10px; margin-top: 6px; }
+  .modal-actions .btn{ flex:1; }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position: fixed;
+    bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--cover);
+    color: var(--paper);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    box-shadow: var(--shadow);
+    z-index: 200;
+    max-width: 90vw;
+  }
+  .toast.err{ background: var(--expense); }
+
+  /* ---------- Responsive (Mobile Optimization) ---------- */
+  @media (max-width: 860px){
+    .dashboard{ grid-template-columns: 1fr; }
+    
+    .sidebar{
+      position: sticky; top:0; z-index:50;
+      flex-direction:row; align-items:center;
+      padding: 12px 16px; gap: 12px;
+      height: auto;
+      border-bottom: 1px solid rgba(22,48,42,0.1);
+    }
+    .sidebar > div:first-child { display: flex; flex-direction: column; }
+    .brand-tag{ display:none; }
+    .brand{ margin-bottom:0; font-size:18px; }
+    
+    .nav{ 
+      flex-direction:row; flex:1; 
+      overflow-x:auto; gap:6px; 
+      padding-bottom:0; 
+      margin: 0;
+    }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav-btn{ white-space:nowrap; padding: 10px 12px; font-size:13.5px; flex-shrink: 0; }
+    
+    .sidebar-footer{ border:none; padding:0; margin:0; display:block; }
+    .sidebar-user{ display:none; }
+    .btn-logout{ padding: 8px 12px; font-size: 12px; width: auto;}
+
+    .content{ padding: 20px 14px 60px; }
+
+    .card-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .stat-card { padding: 14px 12px; }
+    .stat-value { font-size: 18px; }
+
+    .head-actions { width: 100%; justify-content: space-between; }
+    .head-actions > * { flex: 1 1 45%; }
+    
+    /* Unified Mobile Ledger Layout */
+    .ledger::before{ display:none; }
+    .ledger-row.head{ display:none; }
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+    }
+
+    .amount{ text-align:right; font-size: 16px; font-weight: 700; }
+    .row-actions{ grid-column: 1 / -1; justify-content:flex-start; margin-top:6px; }
+
+    /* Custom Mobile Cells */
+    .cell-main { grid-column: 1; display: flex; flex-direction: column; gap: 2px; }
+    .cell-amt { grid-column: 2; align-self: start; }
+    .cell-sub { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); margin-top: 2px;}
+    .cell-acts { grid-column: 1 / -1; }
+
+    /* Gelir/Gider Specific Cells */
+    .cell-date { grid-column: 1 / -1; font-size: 12px; color: var(--muted); margin-bottom: -2px; }
+    .cell-type { grid-column: 1; margin-bottom: 4px; }
+    .cell-desc { grid-column: 1; font-weight: 500; font-size: 14.5px; }
+
+    .kredi-card{ padding: 16px 14px; }
+    .kredi-stats { grid-template-columns: 1fr 1fr; gap: 12px 8px; }
+    .field-row{ grid-template-columns:1fr; gap:12px; }
+  }
+</style>
 </head>
 <body>
 <div id="app">
-<!-- ===================== LOGIN ===================== -->
-<section id="loginScreen" class="login-screen">
-<div class="passbook">
-<div class="passbook-inner">
-<p class="passbook-eyebrow">Hesap Defteri</p>
-<h1 class="passbook-title">hesap_cetveli</h1>
-<p class="passbook-sub">Gelirini, giderini, kredilerini ve kira gelirlerini tek defterde tut. Kullanıcı adın ve kodunla defterine ulaş.</p>
-<div id="loginError" class="login-error hidden"></div>
-<form id="loginForm">
-<div class="field">
-<label for="nickname">Kullanıcı adı</label>
-<input type="text" id="nickname" placeholder="örn. ahmet" autocomplete="username" required minlength="2" maxlength="40">
+
+  <section id="loginScreen" class="login-screen">
+    <div class="passbook">
+      <div class="passbook-inner">
+        <p class="passbook-eyebrow">Hesap Defteri</p>
+        <h1 class="passbook-title">hesap_cetveli</h1>
+        <p class="passbook-sub">Gelirini, giderini, kredilerini ve kira gelirlerini tek defterde tut. Kullanıcı adın ve kodunla defterine ulaş.</p>
+
+        <div id="loginError" class="login-error hidden"></div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="nickname">Kullanıcı adı</label>
+            <input type="text" id="nickname" placeholder="örn. ahmet" autocomplete="username" required minlength="2" maxlength="40">
+          </div>
+          <div class="field">
+            <label for="code">Kullanıcı kodu</label>
+            <input type="text" id="code" inputmode="numeric" pattern="\d{1,10}" maxlength="10" placeholder="örn. 245810" autocomplete="off" required>
+            <p class="field-hint">1–10 haneli, yalnızca rakam. Bu defterine tekrar erişmek için kodunu hatırla.</p>
+          </div>
+          <div class="remember-row">
+            <input type="checkbox" id="remember" checked>
+            <label for="remember" style="margin:0; font-weight:400;">Bu cihazda beni hatırla</label>
+          </div>
+          <button type="submit" class="btn-primary" id="loginBtn">Defteri Aç</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="dashboard" class="dashboard hidden">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">hesap_cetveli</div>
+        <div class="brand-tag">Kişisel Hesap Defteri</div>
+      </div>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="ozet"><span class="num">01</span> Özet</button>
+        <button class="nav-btn" data-view="gg"><span class="num">02</span> Gelir / Gider</button>
+        <button class="nav-btn" data-view="krediler"><span class="num">03</span> Krediler</button>
+        <button class="nav-btn" data-view="kira"><span class="num">04</span> Kira Gelirleri</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">Oturum<strong id="sidebarNick">—</strong></div>
+        <button class="btn-logout" id="logoutBtn">Çıkış yap</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="view-ozet" class="view">
+        <div class="topbar">
+          <div>
+            <h1>Bu Ayın Özeti</h1>
+            <div class="topbar-sub" id="ozetAy">—</div>
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="stat-card income">
+            <p class="stat-label">Toplam Gelir</p>
+            <p class="stat-value income" id="statGelir">₺0</p>
+          </div>
+          <div class="stat-card expense">
+            <p class="stat-label">Toplam Gider</p>
+            <p class="stat-value expense" id="statGider">₺0</p>
+          </div>
+          <div class="stat-card net">
+            <p class="stat-label">Net Durum</p>
+            <p class="stat-value" id="statNet">₺0</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Kalan Kredi Borcu</p>
+            <p class="stat-value" id="statBorc">₺0</p>
+          </div>
+        </div>
+
+        <div class="section-head"><h2>Bu Ay Ödenecek Kredi Taksitleri</h2></div>
+        <div class="ledger" id="ozetKrediListe"></div>
+
+        <div class="section-head" style="margin-top:26px;"><h2>Sabit Kira Gelirleri</h2></div>
+        <div class="ledger" id="ozetKiraListe"></div>
+      </section>
+
+      <section id="view-gg" class="view hidden">
+        <div class="topbar">
+          <div>
+            <h1>Gelir / Gider Hareketleri</h1>
+            <div class="topbar-sub">Aylık gelir ve giderlerinin dökümü</div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Hareketler</h2>
+          <div class="head-actions">
+            <input type="month" id="ggAyFiltre" class="filter">
+            <select id="ggTurFiltre" class="filter">
+              <option value="">Tümü</option>
+              <option value="gelir">Yalnızca Gelir</option>
+              <option value="gider">Yalnızca Gider</option>
+            </select>
+            <button class="btn secondary small" id="ggExportBtn">CSV indir</button>
+            <button class="btn" id="ggEkleBtn">+ Hareket Ekle</button>
+          </div>
+        </div>
+        <div class="ledger" id="ggListe"></div>
+      </section>
+
+      <section id="view-krediler" class="view hidden">
+        <div class="topbar">
+          <div>
+            <h1>Krediler</h1>
+            <div class="topbar-sub">Aylık taksitler, kalan taksitler ve toplam ödenecek tutar</div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Kredi Listesi</h2>
+          <div class="head-actions">
+            <button class="btn" id="krediEkleBtn">+ Kredi Ekle</button>
+          </div>
+        </div>
+        <div class="ledger" id="krediListe"></div>
+      </section>
+
+      <section id="view-kira" class="view hidden">
+        <div class="topbar">
+          <div>
+            <h1>Kira Gelirleri</h1>
+            <div class="topbar-sub">Mülklerinden elde ettiğin aylık kira gelirleri</div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Gelir Kaynakları</h2>
+          <div class="head-actions">
+            <button class="btn" id="kiraEkleBtn">+ Kira Geliri Ekle</button>
+          </div>
+        </div>
+        <div class="ledger" id="kiraListe"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal" id="modalBox"></div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
 </div>
-<div class="field">
-<label for="code">Kullanıcı kodu</label>
-<input type="text" id="code" inputmode="numeric" pattern="\d{1,10}" maxlength="10" placeholder="örn. 245810" autocomplete="off" required>
-<p class="field-hint">1–10 haneli, yalnızca rakam. Bu defterine tekrar erişmek için kodunu hatırla.</p>
-</div>
-<div class="remember-row">
-<input type="checkbox" id="remember" checked>
-<label for="remember" style="margin:0; font-weight:400;">Bu cihazda beni hatırla</label>
-</div>
-<button type="submit" class="btn-primary" id="loginBtn">Defteri Aç</button>
-</form>
-</div>
-</div>
-</section>
-<!-- ===================== DASHBOARD ===================== -->
-<div id="dashboard" class="dashboard hidden">
-<aside class="sidebar">
-<div>
-<div class="brand">hesap_cetveli</div>
-<div class="brand-tag">Kişisel Hesap Defteri</div>
-</div>
-<nav class="nav">
-<button class="nav-btn active" data-view="ozet"><span class="num">01</span> Özet</button>
-<button class="nav-btn" data-view="gg"><span class="num">02</span> Gelir / Gider</button>
-<button class="nav-btn" data-view="krediler"><span class="num">03</span> Krediler</button>
-<button class="nav-btn" data-view="kira"><span class="num">04</span> Kira Gelirleri</button>
-</nav>
-<div class="sidebar-footer">
-<div class="sidebar-user">Oturum<strong id="sidebarNick">—</strong></div>
-<button class="btn-logout" id="logoutBtn">Çıkış yap</button>
-</div>
-</aside>
-<main class="content">
-<!-- ---- ÖZET ---- -->
-<section id="view-ozet" class="view">
-<div class="topbar">
-<div>
-<h1>Bu Ayın Özeti</h1>
-<div class="topbar-sub" id="ozetAy">—</div>
-</div>
-</div>
-<div class="card-row">
-<div class="stat-card income">
-<p class="stat-label">Toplam Gelir</p>
-<p class="stat-value income" id="statGelir">₺0</p>
-</div>
-<div class="stat-card expense">
-<p class="stat-label">Toplam Gider</p>
-<p class="stat-value expense" id="statGider">₺0</p>
-</div>
-<div class="stat-card net">
-<p class="stat-label">Net Durum</p>
-<p class="stat-value" id="statNet">₺0</p>
-</div>
-<div class="stat-card">
-<p class="stat-label">Kalan Kredi Borcu</p>
-<p class="stat-value" id="statBorc">₺0</p>
-</div>
-</div>
-<div class="section-head"><h2>Bu Ay Ödenecek Kredi Taksitleri</h2></div>
-<div class="ledger" id="ozetKrediListe"></div>
-<div class="section-head" style="margin-top:26px;"><h2>Sabit Kira Gelirleri</h2></div>
-<div class="ledger" id="ozetKiraListe"></div>
-</section>
-<!-- ---- GELİR / GİDER ---- -->
-<section id="view-gg" class="view hidden">
-<div class="topbar">
-<div>
-<h1>Gelir / Gider Hareketleri</h1>
-<div class="topbar-sub">Aylık gelir ve giderlerinin dökümü</div>
-</div>
-</div>
-<div class="section-head">
-<h2>Hareketler</h2>
-<div class="head-actions">
-<input type="month" id="ggAyFiltre" class="filter">
-<select id="ggTurFiltre" class="filter">
-<option value="">Tümü</option>
-<option value="gelir">Yalnızca Gelir</option>
-<option value="gider">Yalnızca Gider</option>
-</select>
-<button class="btn secondary small" id="ggExportBtn">CSV indir</button>
-<button class="btn" id="ggEkleBtn">+ Hareket Ekle</button>
-</div>
-</div>
-<div class="ledger" id="ggListe"></div>
-</section>
-<!-- ---- KREDİLER ---- -->
-<section id="view-krediler" class="view hidden">
-<div class="topbar">
-<div>
-<h1>Krediler</h1>
-<div class="topbar-sub">Aylık taksitler, kalan taksitler ve toplam ödenecek tutar</div>
-</div>
-</div>
-<div class="section-head">
-<h2>Kredi Listesi</h2>
-<div class="head-actions">
-<button class="btn" id="krediEkleBtn">+ Kredi Ekle</button>
-</div>
-</div>
-<div class="ledger" id="krediListe"></div>
-</section>
-<!-- ---- KİRA GELİRLERİ ---- -->
-<section id="view-kira" class="view hidden">
-<div class="topbar">
-<div>
-<h1>Kira Gelirleri</h1>
-<div class="topbar-sub">Mülklerinden elde ettiğin aylık kira gelirleri</div>
-</div>
-</div>
-<div class="section-head">
-<h2>Gelir Kaynakları</h2>
-<div class="head-actions">
-<button class="btn" id="kiraEkleBtn">+ Kira Geliri Ekle</button>
-</div>
-</div>
-<div class="ledger" id="kiraListe"></div>
-</section>
-</main>
-</div>
-<!-- ===================== MODAL ===================== -->
-<div id="modalOverlay" class="modal-overlay hidden">
-<div class="modal" id="modalBox"></div>
-</div>
-<!-- ===================== TOAST ===================== -->
-<div id="toast" class="toast hidden"></div>
-</div>
+
 <script>
 (function(){
-"use strict";
-const DB_URL = "https://hesap-cetveli-6e872-default-rtdb.firebaseio.com";
-const REMEMBER_KEY = "hesap_cetveli_remember";
-const GELIR_KATEGORILERI = ["Maaş","Kira Geliri","Ek Gelir","Yatırım Getirisi","Diğer Gelir"];
-const GIDER_KATEGORILERI = ["Fatura","Market","Ulaşım","Sağlık","Eğitim","Eğlence","Kredi Taksidi","Diğer Gider"];
-let state = {
-userKey: null,
-nickname: null,
-transactions: {},
-loans: {},
-rentals: {},
-activeView: "ozet"
-};
-const $ = (id) => document.getElementById(id);
-// ---------------- Utilities ----------------
-function slugify(str){
-const map = {'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u','İ':'i','Ç':'c','Ğ':'g','Ö':'o','Ş':'s','Ü':'u'};
-return str.toLowerCase()
-.replace(/[çğıöşüİÇĞÖŞÜ]/g, c => map[c] || c)
-.replace(/[^a-z0-9]+/g, '_')
-.replace(/^_+|_+$/g, '') || 'kullanici';
-}
-function formatCurrency(n){
-return Number(n || 0).toLocaleString('tr-TR', {style:'currency', currency:'TRY', maximumFractionDigits:2});
-}
-function formatDate(d){
-if(!d) return '—';
-const dt = new Date(d);
-if(isNaN(dt.getTime())) return d;
-return dt.toLocaleDateString('tr-TR');
-}
-function currentMonthKey(){
-const d = new Date();
-return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-}
-function monthLabel(monthKey){
-if(!monthKey) return '';
-const [y,m] = monthKey.split('-');
-const d = new Date(Number(y), Number(m)-1, 1);
-return d.toLocaleDateString('tr-TR', {month:'long', year:'numeric'});
-}
-function toast(msg, isErr){
-const t = $('toast');
-t.textContent = msg;
-t.classList.toggle('err', !!isErr);
-t.classList.remove('hidden');
-clearTimeout(toast._timer);
-toast._timer = setTimeout(() => t.classList.add('hidden'), 3200);
-}
-function escapeHtml(str){
-return String(str == null ? '' : str)
-.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-// ---------------- Firebase REST helpers ----------------
-async function dbRequest(path, method, body){
-const res = await fetch(`${DB_URL}/${path}.json`, {
-method: method || 'GET',
-headers: body ? {'Content-Type':'application/json'} : undefined,
-body: body ? JSON.stringify(body) : undefined
-});
-if(!res.ok) throw new Error('Sunucu isteği başarısız oldu (' + res.status + ')');
-return res.json();
-}
-const dbGet = (path) => dbRequest(path, 'GET');
-const dbSet = (path, data) => dbRequest(path, 'PUT', data);
-const dbPush = (path, data) => dbRequest(path, 'POST', data);
-const dbPatch = (path, data) => dbRequest(path, 'PATCH', data);
-const dbDelete = (path) => dbRequest(path, 'DELETE');
-// ---------------- Login flow ----------------
-const loginForm = $('loginForm');
-const loginError = $('loginError');
-const loginBtn = $('loginBtn');
-function showLoginError(msg){
-loginError.textContent = msg;
-loginError.classList.remove('hidden');
-}
-function clearLoginError(){
-loginError.classList.add('hidden');
-}
-loginForm.addEventListener('submit', handleLogin);
-async function handleLogin(e){
-e.preventDefault();
-clearLoginError();
-const nickname = $('nickname').value.trim();
-const code = $('code').value.trim();
-const remember = $('remember').checked;
-if(nickname.length < 2){ showLoginError('Kullanıcı adı en az 2 karakter olmalı.'); return; }
-if(!/^\d{1,10}$/.test(code)){ showLoginError('Kullanıcı kodu 1–10 haneli, yalnızca rakamlardan oluşmalı.'); return; }
-const userKey = slugify(nickname) + '_' + code;
-loginBtn.disabled = true;
-loginBtn.textContent = 'Defter açılıyor…';
-try{
-let profile = await dbGet(`users/${userKey}/profile`);
-if(!profile){
-profile = {nickname, code, createdAt: new Date().toISOString()};
-await dbSet(`users/${userKey}/profile`, profile);
-toast(`Hoş geldin ${nickname}! Yeni bir defter oluşturuldu.`);
-} else {
-toast(`Tekrar hoş geldin, ${profile.nickname}.`);
-}
-state.userKey = userKey;
-state.nickname = profile.nickname;
-if(remember){
-localStorage.setItem(REMEMBER_KEY, JSON.stringify({nickname: profile.nickname, code, userKey}));
-} else {
-localStorage.removeItem(REMEMBER_KEY);
-}
-await loadAllData();
-enterDashboard();
-} catch(err){
-showLoginError('Bağlantı hatası: ' + err.message + ' — internet bağlantını ve Firebase kurallarını kontrol et.');
-} finally{
-loginBtn.disabled = false;
-loginBtn.textContent = 'Defteri Aç';
-}
-}
-async function tryAutoLogin(){
-const saved = localStorage.getItem(REMEMBER_KEY);
-if(!saved) return;
-try{
-const {nickname, code, userKey} = JSON.parse(saved);
-loginBtn.disabled = true;
-loginBtn.textContent = 'Defter açılıyor…';
-const profile = await dbGet(`users/${userKey}/profile`);
-if(!profile){ localStorage.removeItem(REMEMBER_KEY); return; }
-state.userKey = userKey;
-state.nickname = profile.nickname || nickname;
-await loadAllData();
-enterDashboard();
-toast(`Tekrar hoş geldin, ${state.nickname}.`);
-} catch(err){
-// Sessiz geç, kullanıcı elle giriş yapabilir
-console.warn('Otomatik giriş başarısız:', err.message);
-} finally{
-loginBtn.disabled = false;
-loginBtn.textContent = 'Defteri Aç';
-}
-}
-$('logoutBtn').addEventListener('click', () => {
-localStorage.removeItem(REMEMBER_KEY);
-state = {userKey:null, nickname:null, transactions:{}, loans:{}, rentals:{}, activeView:'ozet'};
-$('dashboard').classList.add('hidden');
-$('loginScreen').classList.remove('hidden');
-loginForm.reset();
-$('remember').checked = true;
-clearLoginError();
-});
-async function loadAllData(){
-const [tx, loans, rentals] = await Promise.all([
-dbGet(`users/${state.userKey}/transactions`),
-dbGet(`users/${state.userKey}/loans`),
-dbGet(`users/${state.userKey}/rentals`)
-]);
-state.transactions = tx || {};
-state.loans = loans || {};
-state.rentals = rentals || {};
-}
-function enterDashboard(){
-$('loginScreen').classList.add('hidden');
-$('dashboard').classList.remove('hidden');
-$('sidebarNick').textContent = state.nickname;
-$('ggAyFiltre').value = currentMonthKey();
-switchView('ozet');
-}
-// ---------------- Navigation ----------------
-document.querySelectorAll('.nav-btn').forEach(btn => {
-btn.addEventListener('click', () => switchView(btn.dataset.view));
-});
-function switchView(view){
-state.activeView = view;
-document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
-document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-$('view-' + view).classList.remove('hidden');
-renderAll();
-}
-function renderAll(){
-renderOzet();
-renderGG();
-renderKrediler();
-renderKira();
-}
-// ---------------- Derived data ----------------
-function loanRemaining(loan){
-const total = Number(loan.totalInstallments) || 0;
-const paid = Number(loan.paidInstallments) || 0;
-const remaining = Math.max(total - paid, 0);
-const monthly = Number(loan.monthlyPayment) || 0;
-return {remaining, remainingAmount: remaining* monthly};
-}
-function monthTotals(monthKey){
-let gelir = 0, gider = 0;
-Object.values(state.transactions).forEach(t => {
-if(!t.date) return;
-if(t.date.slice(0,7) !== monthKey) return;
-if(t.type === 'gelir') gelir += Number(t.amount)||0;
-else gider += Number(t.amount)||0;
-});
-const kiraToplam = Object.values(state.rentals).reduce((s,r) => s + (Number(r.amount)||0), 0);
-const krediToplam = Object.values(state.loans).reduce((s,l) => {
-const {remaining} = loanRemaining(l);
-return s + (remaining > 0 ? (Number(l.monthlyPayment)||0) : 0);
-}, 0);
-return { gelir: gelir + kiraToplam, gider: gider + krediToplam, islemGelir: gelir, islemGider: gider, kiraToplam, krediToplam };
-}
-// ---------------- Render: Özet ----------------
-function renderOzet(){
-const mk = currentMonthKey();
-$('ozetAy').textContent = monthLabel(mk);
-const totals = monthTotals(mk);
-const net = totals.gelir - totals.gider;
-const kalanBorc = Object.values(state.loans).reduce((s,l) => s + loanRemaining(l).remainingAmount, 0);
-$('statGelir').textContent = formatCurrency(totals.gelir);
-$('statGider').textContent = formatCurrency(totals.gider);
-const netEl = $('statNet');
-netEl.textContent = formatCurrency(net);
-netEl.className = 'stat-value ' + (net >= 0 ? 'income' : 'expense');
-$('statBorc').textContent = formatCurrency(kalanBorc);
-// Bu ay ödenecek krediler
-const loanEntries = Object.entries(state.loans).filter(([,l]) => loanRemaining(l).remaining > 0);
-const krediWrap = $('ozetKrediListe');
-if(loanEntries.length === 0){
-krediWrap.innerHTML = emptyState('Kredi kaydı yok', 'Krediler sekmesinden kredi ekleyerek takibe başlayabilirsin.');
-} else {
-krediWrap.innerHTML = `
-<div class="ledger-row head">
-<div>Kredi</div>
-<div>Aylık Taksit</div>
-<div>Kalan Taksit</div>
-</div>
-` + loanEntries.map(([, l]) => {
-const {remaining} = loanRemaining(l);
-return `
-<div class="ledger-row">
-<div><strong>${escapeHtml(l.name)}</strong>${l.note ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(l.note)}</div>` : ''}</div>
-<div>${formatCurrency(l.monthlyPayment)}</div>
-<div>${remaining} taksit</div>
-</div>
-`;
-}).join('');
-}
-// Sabit kira gelirleri
-const rentalEntries = Object.entries(state.rentals);
-const kiraWrap = $('ozetKiraListe');
-if(rentalEntries.length === 0){
-kiraWrap.innerHTML = emptyState('Kira geliri yok', 'Kira Gelirleri sekmesinden mülk ekleyebilirsin.');
-} else {
-kiraWrap.innerHTML = `
-<div class="ledger-row head">
-<div>Mülk</div>
-<div>Kiracı</div>
-<div>Aylık Tutar</div>
-</div>
-` + rentalEntries.map(([, r]) => `
-<div class="ledger-row">
-<div><strong>${escapeHtml(r.property)}</strong>${r.note ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(r.note)}</div>` : ''}</div>
-<div>${escapeHtml(r.tenant || '—')}</div>
-<div>${formatCurrency(r.amount)}</div>
-</div>
-`).join('');
-}
-}
-function emptyState(title, sub){
-return `<div class="empty-state"><strong>${escapeHtml(title)}</strong>${escapeHtml(sub)}</div>`;
-}
-// ---------------- Render: Gelir / Gider ----------------
-function renderGG(){
-const monthFilter = $('ggAyFiltre').value;
-const typeFilter = $('ggTurFiltre').value;
-const wrap = $('ggListe');
-let entries = Object.entries(state.transactions);
-if(monthFilter) entries = entries.filter(([,t]) => (t.date || '').slice(0,7) === monthFilter);
-if(typeFilter) entries = entries.filter(([,t]) => t.type === typeFilter);
-entries.sort((a,b) => (b[1].date || '').localeCompare(a[1].date || ''));
-if(entries.length === 0){
-wrap.innerHTML = emptyState('Hareket yok', 'Sağ üstteki “+ Hareket Ekle” ile gelir veya gider ekleyebilirsin.');
-return;
-}
-wrap.innerHTML = `
-<div class="ledger-row head">
-<div>Tarih</div>
-<div>Tür</div>
-<div>Açıklama / Kategori</div>
-<div>Tutar</div>
-</div>
-` + entries.map(([id, t]) => `
-<div class="ledger-row gg-row">
-<div>${formatDate(t.date)}</div>
-<div><span class="tag ${t.type === 'gelir' ? 'income' : 'expense'}">${t.type === 'gelir' ? 'Gelir' : 'Gider'}</span></div>
-<div>
-<div>${escapeHtml(t.description || t.category)}</div>
-${t.description ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(t.category)}</div>` : ''}
-</div>
-<div class="amount ${t.type === 'gelir' ? 'income' : 'expense'}">${t.type === 'gider' ? '-' : '+'}${formatCurrency(t.amount)}</div>
-<div class="row-actions">
-<button class="icon-btn" data-edit="tx" data-id="${id}" title="Düzenle">✎</button>
-<button class="icon-btn danger" data-del="transactions" data-id="${id}" title="Sil">✕</button>
-</div>
-</div>
-`).join('');
-}
-$('ggAyFiltre').addEventListener('change', renderGG);
-$('ggTurFiltre').addEventListener('change', renderGG);
-$('ggEkleBtn').addEventListener('click', () => openTxModal());
-$('ggExportBtn').addEventListener('click', exportCSV);
-function exportCSV(){
-const rows = [['Tarih','Tür','Kategori','Açıklama','Tutar']];
-Object.values(state.transactions)
-.sort((a,b) => (a.date||'').localeCompare(b.date||''))
-.forEach(t => rows.push([t.date||'', t.type||'', t.category||'', t.description||'', t.amount||0]));
-const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n');
-const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = `hesap_cetveli_${state.nickname}_hareketler.csv`;
-a.click();
-URL.revokeObjectURL(url);
-}
-// ---------------- Render: Krediler ----------------
-function renderKrediler(){
-const wrap = $('krediListe');
-const entries = Object.entries(state.loans);
-if(entries.length === 0){
-wrap.innerHTML = emptyState('Kredi kaydı yok', '“+ Kredi Ekle” ile bankandan çektiğin kredileri takip etmeye başla.');
-return;
-}
-entries.sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
-wrap.innerHTML = entries.map(([id, l]) => {
-const total = Number(l.totalInstallments)||0;
-const paid = Math.min(Number(l.paidInstallments)||0, total);
-const {remaining, remainingAmount} = loanRemaining(l);
-const pct = total > 0 ? Math.round((paid/total)*100) : 0;
-return `
-<div class="kredi-card">
-<div class="kredi-top">
-<div>
-<h3 class="kredi-name">${escapeHtml(l.name)}</h3>
-${l.note ? `<div class="kredi-note">${escapeHtml(l.note)}</div>` : ''}
-</div>
-<div class="kredi-stats">
-<div><div class="kredi-stat-label">Aylık Taksit</div><div class="kredi-stat-value">${formatCurrency(l.monthlyPayment)}</div></div>
-<div><div class="kredi-stat-label">Ödenen / Toplam</div><div class="kredi-stat-value">${paid} / ${total}</div></div>
-<div><div class="kredi-stat-label">Kalan Taksit</div><div class="kredi-stat-value">${remaining}</div></div>
-<div><div class="kredi-stat-label">Kalan Ödeme</div><div class="kredi-stat-value">${formatCurrency(remainingAmount)}</div></div>
-</div>
-</div>
-<div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-<div class="progress-label">%${pct} tamamlandı</div>
-<div class="kredi-actions">
-<button class="btn small" data-pay="${id}">${remaining > 0 ? 'Bu Ayın Taksitini Öde' : 'Taksit ödenmiş'}</button>
-<button class="icon-btn" data-edit="loan" data-id="${id}" title="Düzenle">✎</button>
-<button class="icon-btn danger" data-del="loans" data-id="${id}" title="Sil">✕</button>
-</div>
-</div>
-`;
-}).join('');
-}
-$('krediEkleBtn').addEventListener('click', () => openLoanModal());
-// ---------------- Render: Kira Gelirleri ----------------
-function renderKira(){
-const wrap = $('kiraListe');
-const entries = Object.entries(state.rentals);
-if(entries.length === 0){
-wrap.innerHTML = emptyState('Kira geliri yok', '“+ Kira Geliri Ekle” ile mülklerinden elde ettiğin geliri kaydet.');
-return;
-}
-wrap.innerHTML = `
-<div class="ledger-row head">
-<div>Mülk</div>
-<div>Kiracı</div>
-<div>Aylık Tutar</div>
-<div>Ödeme Günü</div>
-</div>
-` + entries.map(([id, r]) => `
-<div class="ledger-row kira-row">
-<div><strong>${escapeHtml(r.property)}</strong>${r.note ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(r.note)}</div>` : ''}</div>
-<div>${escapeHtml(r.tenant || '—')}</div>
-<div>${formatCurrency(r.amount)}</div>
-<div>${r.paymentDay ? 'Her ayın ' + r.paymentDay + '. günü' : '—'}</div>
-<div class="row-actions">
-<button class="icon-btn" data-edit="rental" data-id="${id}" title="Düzenle">✎</button>
-<button class="icon-btn danger" data-del="rentals" data-id="${id}" title="Sil">✕</button>
-</div>
-</div>
-`).join('');
-}
-$('kiraEkleBtn').addEventListener('click', () => openRentalModal());
-// ---------------- Delegated row actions ----------------
-document.addEventListener('click', async (e) => {
-const editBtn = e.target.closest('[data-edit]');
-const delBtn = e.target.closest('[data-del]');
-const payBtn = e.target.closest('[data-pay]');
-if(editBtn){
-const id = editBtn.dataset.id;
-const kind = editBtn.dataset.edit;
-if(kind === 'tx') openTxModal(id);
-if(kind === 'loan') openLoanModal(id);
-if(kind === 'rental') openRentalModal(id);
-}
-if(delBtn){
-const id = delBtn.dataset.id;
-const path = delBtn.dataset.del;
-if(!confirm('Bu kaydı silmek istediğine emin misin?')) return;
-try{
-await dbDelete(`users/${state.userKey}/${path}/${id}`);
-delete state[path][id];
-renderAll();
-toast('Kayıt silindi.');
-}catch(err){
-toast('Silinemedi: ' + err.message, true);
-}
-}
-if(payBtn){
-const id = payBtn.dataset.pay;
-const loan = state.loans[id];
-const total = Number(loan.totalInstallments)||0;
-const paid = Math.min((Number(loan.paidInstallments)||0) + 1, total);
-try{
-await dbPatch(`users/${state.userKey}/loans/${id}`, {paidInstallments: paid});
-state.loans[id].paidInstallments = paid;
-renderAll();
-toast('Taksit ödendi olarak işaretlendi.');
-}catch(err){
-toast('Güncellenemedi: ' + err.message, true);
-}
-}
-});
-// ---------------- Modal: generic ----------------
-const modalOverlay = $('modalOverlay');
-const modalBox = $('modalBox');
-function closeModal(){
-modalOverlay.classList.add('hidden');
-modalBox.innerHTML = '';
-}
-modalOverlay.addEventListener('click', (e) => {
-if(e.target === modalOverlay) closeModal();
-});
-function openModalWith(html){
-modalBox.innerHTML = html;
-modalOverlay.classList.remove('hidden');
-}
-// ---- Transaction modal ----
-function openTxModal(id){
-const t = id ? state.transactions[id] : null;
-const isEdit = !!t;
-const datalist = (t && t.type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI);
-openModalWith(`
-<div>
-<h3>${isEdit ? 'Hareketi Düzenle' : 'Yeni Gelir / Gider Ekle'}</h3>
-<form id="txForm">
-<div class="field-row">
-<div class="field">
-<label for="txType">Tür</label>
-<select id="txType">
-<option value="gelir" ${!t || t.type === 'gelir' ? 'selected' : ''}>Gelir</option>
-<option value="gider" ${t && t.type === 'gider' ? 'selected' : ''}>Gider</option>
-</select>
-</div>
-<div class="field">
-<label for="txDate">Tarih</label>
-<input type="date" id="txDate" value="${t ? t.date || '' : ''}" required>
-</div>
-</div>
-<div class="field">
-<label for="txCategory">Kategori</label>
-<input list="txCatList" id="txCategory" value="${t ? t.category || '' : ''}" placeholder="Seç veya yaz" required>
-<datalist id="txCatList">
-${datalist.map(c => `<option value="${c}">`).join('')}
-</datalist>
-</div>
-<div class="field">
-<label for="txDesc">Açıklama (opsiyonel)</label>
-<input type="text" id="txDesc" value="${t ? t.description || '' : ''}" placeholder="Örn: Elektrik faturası">
-</div>
-<div class="field">
-<label for="txAmount">Tutar (₺)</label>
-<input type="number" step="0.01" id="txAmount" value="${t ? t.amount || '' : ''}" placeholder="Örn: 350" required>
-</div>
-<div class="modal-actions">
-<button type="button" class="btn secondary" id="txCancel">Vazgeç</button>
-<button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
-</div>
-</form>
-</div>
-`);
-$('txCategory').addEventListener('focus', () => {
-const type = $('txType').value;
-const list = type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI;
-$('txCatList').innerHTML = list.map(c => `<option value="${c}">`).join('');
-});
-$('txType').addEventListener('change', () => {
-const type = $('txType').value;
-const list = type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI;
-$('txCatList').innerHTML = list.map(c => `<option value="${c}">`).join('');
-});
-$('txCancel').addEventListener('click', closeModal);
-$('txForm').addEventListener('submit', async (e) => {
-e.preventDefault();
-const payload = {
-type: $('txType').value,
-date: $('txDate').value,
-category: $('txCategory').value.trim(),
-description: $('txDesc').value.trim(),
-amount: Number($('txAmount').value)
-};
-try{
-if(isEdit){
-await dbPatch(`users/${state.userKey}/transactions/${id}`, payload);
-state.transactions[id] = payload;
-toast('Hareket güncellendi.');
-} else {
-const res = await dbPush(`users/${state.userKey}/transactions`, payload);
-state.transactions[res.name] = payload;
-toast('Hareket eklendi.');
-}
-closeModal();
-renderAll();
-}catch(err){
-toast('Kaydedilemedi: ' + err.message, true);
-}
-});
-}
-// ---- Loan modal ----
-function openLoanModal(id){
-const l = id ? state.loans[id] : null;
-const isEdit = !!l;
-openModalWith(`
-<div>
-<h3>${isEdit ? 'Krediyi Düzenle' : 'Yeni Kredi Ekle'}</h3>
-<form id="loanForm">
-<div class="field-row">
-<div class="field">
-<label for="loanName">Kredi adı / Banka</label>
-<input type="text" id="loanName" value="${l ? l.name || '' : ''}" placeholder="Örn: Konut Kredisi" required>
-</div>
-<div class="field">
-<label for="loanMonthly">Aylık Taksit (₺)</label>
-<input type="number" step="0.01" id="loanMonthly" value="${l ? l.monthlyPayment || '' : ''}" placeholder="Örn: 2500" required>
-</div>
-</div>
-<div class="field-row">
-<div class="field">
-<label for="loanTotalCount">Toplam Taksit Sayısı</label>
-<input type="number" id="loanTotalCount" value="${l ? l.totalInstallments || '' : ''}" min="1" placeholder="Örn: 36" required>
-</div>
-<div class="field">
-<label for="loanPaidCount">Ödenen Taksit Sayısı</label>
-<input type="number" id="loanPaidCount" value="${l ? l.paidInstallments || 0 : 0}" min="0" placeholder="Örn: 0">
-</div>
-</div>
-<div class="field">
-<label for="loanNote">Not (opsiyonel)</label>
-<input type="text" id="loanNote" value="${l ? l.note || '' : ''}" placeholder="Örn: İş Bankası">
-</div>
-<div class="modal-actions">
-<button type="button" class="btn secondary" id="loanCancel">Vazgeç</button>
-<button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
-</div>
-</form>
-</div>
-`);
-$('loanCancel').addEventListener('click', closeModal);
-$('loanForm').addEventListener('submit', async (e) => {
-e.preventDefault();
-const total = Number($('loanTotalCount').value);
-let paid = Number($('loanPaidCount').value);
-if(paid > total) paid = total;
-const payload = {
-name: $('loanName').value.trim(),
-monthlyPayment: Number($('loanMonthly').value),
-totalInstallments: total,
-paidInstallments: paid,
-note: $('loanNote').value.trim()
-};
-try{
-if(isEdit){
-await dbPatch(`users/${state.userKey}/loans/${id}`, payload);
-state.loans[id] = payload;
-toast('Kredi güncellendi.');
-} else {
-const res = await dbPush(`users/${state.userKey}/loans`, payload);
-state.loans[res.name] = payload;
-toast('Kredi eklendi.');
-}
-closeModal();
-renderAll();
-}catch(err){
-toast('Kaydedilemedi: ' + err.message, true);
-}
-});
-}
-// ---- Rental modal ----
-function openRentalModal(id){
-const r = id ? state.rentals[id] : null;
-const isEdit = !!r;
-openModalWith(`
-<div>
-<h3>${isEdit ? 'Kira Gelirini Düzenle' : 'Yeni Kira Geliri Ekle'}</h3>
-<form id="rentalForm">
-<div class="field-row">
-<div class="field">
-<label for="rentalProperty">Mülk adı / adresi</label>
-<input type="text" id="rentalProperty" value="${r ? r.property || '' : ''}" placeholder="Örn: Kadıköy Daire" required>
-</div>
-<div class="field">
-<label for="rentalTenant">Kiracı</label>
-<input type="text" id="rentalTenant" value="${r ? r.tenant || '' : ''}" placeholder="Örn: Ayşe Yılmaz">
-</div>
-</div>
-<div class="field-row">
-<div class="field">
-<label for="rentalDay">Ödeme Günü</label>
-<input type="number" id="rentalDay" value="${r ? r.paymentDay || '' : ''}" min="1" max="31" placeholder="Örn: 5">
-</div>
-<div class="field">
-<label for="rentalAmount">Aylık Kira Tutarı (₺)</label>
-<input type="number" step="0.01" id="rentalAmount" value="${r ? r.amount || '' : ''}" placeholder="Örn: 3500" required>
-</div>
-</div>
-<div class="field">
-<label for="rentalNote">Not (opsiyonel)</label>
-<input type="text" id="rentalNote" value="${r ? r.note || '' : ''}" placeholder="Örn: 2 yıllık sözleşme">
-</div>
-<div class="modal-actions">
-<button type="button" class="btn secondary" id="rentalCancel">Vazgeç</button>
-<button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
-</div>
-</form>
-</div>
-`);
-$('rentalCancel').addEventListener('click', closeModal);
-$('rentalForm').addEventListener('submit', async (e) => {
-e.preventDefault();
-const payload = {
-property: $('rentalProperty').value.trim(),
-tenant: $('rentalTenant').value.trim(),
-paymentDay: $('rentalDay').value ? Number($('rentalDay').value) : null,
-amount: Number($('rentalAmount').value),
-note: $('rentalNote').value.trim()
-};
-try{
-if(isEdit){
-await dbPatch(`users/${state.userKey}/rentals/${id}`, payload);
-state.rentals[id] = payload;
-toast('Kira geliri güncellendi.');
-} else {
-const res = await dbPush(`users/${state.userKey}/rentals`, payload);
-state.rentals[res.name] = payload;
-toast('Kira geliri eklendi.');
-}
-closeModal();
-renderAll();
-}catch(err){
-toast('Kaydedilemedi: ' + err.message, true);
-}
-});
-}
-// ---------------- Init ----------------
-tryAutoLogin();
+  "use strict";
+
+  const DB_URL = "https://hesap-cetveli-6e872-default-rtdb.firebaseio.com";
+  const REMEMBER_KEY = "hesap_cetveli_remember";
+
+  const GELIR_KATEGORILERI = ["Maaş","Kira Geliri","Ek Gelir","Yatırım Getirisi","Diğer Gelir"];
+  const GIDER_KATEGORILERI = ["Fatura","Market","Ulaşım","Sağlık","Eğitim","Eğlence","Kredi Taksidi","Diğer Gider"];
+
+  let state = {
+    userKey: null,
+    nickname: null,
+    transactions: {},
+    loans: {},
+    rentals: {},
+    activeView: "ozet"
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  // ---------------- Utilities ----------------
+  function slugify(str){
+    const map = {'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u','İ':'i','Ç':'c','Ğ':'g','Ö':'o','Ş':'s','Ü':'u'};
+    return str.toLowerCase()
+      .replace(/[çğıöşüİÇĞÖŞÜ]/g, c => map[c] || c)
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'kullanici';
+  }
+
+  function formatCurrency(n){
+    return Number(n || 0).toLocaleString('tr-TR', {style:'currency', currency:'TRY', maximumFractionDigits:2});
+  }
+
+  function formatDate(d){
+    if(!d) return '—';
+    const dt = new Date(d);
+    if(isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString('tr-TR');
+  }
+
+  function currentMonthKey(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  function monthLabel(monthKey){
+    if(!monthKey) return '';
+    const [y,m] = monthKey.split('-');
+    const d = new Date(Number(y), Number(m)-1, 1);
+    return d.toLocaleDateString('tr-TR', {month:'long', year:'numeric'});
+  }
+
+  function toast(msg, isErr){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('err', !!isErr);
+    t.classList.remove('hidden');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.add('hidden'), 3200);
+  }
+
+  function escapeHtml(str){
+    return String(str == null ? '' : str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ---------------- Firebase REST helpers ----------------
+  async function dbRequest(path, method, body){
+    const res = await fetch(`${DB_URL}/${path}.json`, {
+      method: method || 'GET',
+      headers: body ? {'Content-Type':'application/json'} : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if(!res.ok) throw new Error('Sunucu isteği başarısız oldu (' + res.status + ')');
+    return res.json();
+  }
+  const dbGet = (path) => dbRequest(path, 'GET');
+  const dbSet = (path, data) => dbRequest(path, 'PUT', data);
+  const dbPush = (path, data) => dbRequest(path, 'POST', data);
+  const dbPatch = (path, data) => dbRequest(path, 'PATCH', data);
+  const dbDelete = (path) => dbRequest(path, 'DELETE');
+
+  // ---------------- Login flow ----------------
+  const loginForm = $('loginForm');
+  const loginError = $('loginError');
+  const loginBtn = $('loginBtn');
+
+  function showLoginError(msg){
+    loginError.textContent = msg;
+    loginError.classList.remove('hidden');
+  }
+  function clearLoginError(){
+    loginError.classList.add('hidden');
+  }
+
+  loginForm.addEventListener('submit', handleLogin);
+
+  async function handleLogin(e){
+    e.preventDefault();
+    clearLoginError();
+    const nickname = $('nickname').value.trim();
+    const code = $('code').value.trim();
+    const remember = $('remember').checked;
+
+    if(nickname.length < 2){ showLoginError('Kullanıcı adı en az 2 karakter olmalı.'); return; }
+    if(!/^\d{1,10}$/.test(code)){ showLoginError('Kullanıcı kodu 1–10 haneli, yalnızca rakamlardan oluşmalı.'); return; }
+
+    const userKey = slugify(nickname) + '_' + code;
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Defter açılıyor…';
+
+    try{
+      let profile = await dbGet(`users/${userKey}/profile`);
+      if(!profile){
+        profile = {nickname, code, createdAt: new Date().toISOString()};
+        await dbSet(`users/${userKey}/profile`, profile);
+        toast(`Hoş geldin ${nickname}! Yeni bir defter oluşturuldu.`);
+      } else {
+        toast(`Tekrar hoş geldin, ${profile.nickname}.`);
+      }
+
+      state.userKey = userKey;
+      state.nickname = profile.nickname;
+
+      if(remember){
+        localStorage.setItem(REMEMBER_KEY, JSON.stringify({nickname: profile.nickname, code, userKey}));
+      } else {
+        localStorage.removeItem(REMEMBER_KEY);
+      }
+
+      await loadAllData();
+      enterDashboard();
+    } catch(err){
+      showLoginError('Bağlantı hatası: ' + err.message + ' — internet bağlantını ve Firebase kurallarını kontrol et.');
+    } finally{
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Defteri Aç';
+    }
+  }
+
+  async function tryAutoLogin(){
+    const saved = localStorage.getItem(REMEMBER_KEY);
+    if(!saved) return;
+    try{
+      const {nickname, code, userKey} = JSON.parse(saved);
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Defter açılıyor…';
+      const profile = await dbGet(`users/${userKey}/profile`);
+      if(!profile){ localStorage.removeItem(REMEMBER_KEY); return; }
+      state.userKey = userKey;
+      state.nickname = profile.nickname || nickname;
+      await loadAllData();
+      enterDashboard();
+      toast(`Tekrar hoş geldin, ${state.nickname}.`);
+    } catch(err){
+      console.warn('Otomatik giriş başarısız:', err.message);
+    } finally{
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Defteri Aç';
+    }
+  }
+
+  $('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem(REMEMBER_KEY);
+    state = {userKey:null, nickname:null, transactions:{}, loans:{}, rentals:{}, activeView:'ozet'};
+    $('dashboard').classList.add('hidden');
+    $('loginScreen').classList.remove('hidden');
+    loginForm.reset();
+    $('remember').checked = true;
+    clearLoginError();
+  });
+
+  async function loadAllData(){
+    const [tx, loans, rentals] = await Promise.all([
+      dbGet(`users/${state.userKey}/transactions`),
+      dbGet(`users/${state.userKey}/loans`),
+      dbGet(`users/${state.userKey}/rentals`)
+    ]);
+    state.transactions = tx || {};
+    state.loans = loans || {};
+    state.rentals = rentals || {};
+  }
+
+  function enterDashboard(){
+    $('loginScreen').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    $('sidebarNick').textContent = state.nickname;
+    $('ggAyFiltre').value = currentMonthKey();
+    switchView('ozet');
+  }
+
+  // ---------------- Navigation ----------------
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchView(btn.dataset.view));
+  });
+
+  function switchView(view){
+    state.activeView = view;
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    $('view-' + view).classList.remove('hidden');
+    renderAll();
+  }
+
+  function renderAll(){
+    renderOzet();
+    renderGG();
+    renderKrediler();
+    renderKira();
+  }
+
+  // ---------------- Derived data ----------------
+  function loanRemaining(loan){
+    const total = Number(loan.totalInstallments) || 0;
+    const paid = Number(loan.paidInstallments) || 0;
+    const remaining = Math.max(total - paid, 0);
+    const monthly = Number(loan.monthlyPayment) || 0;
+    return {remaining, remainingAmount: remaining * monthly};
+  }
+
+  function monthTotals(monthKey){
+    let gelir = 0, gider = 0;
+    Object.values(state.transactions).forEach(t => {
+      if(!t.date) return;
+      if(t.date.slice(0,7) !== monthKey) return;
+      if(t.type === 'gelir') gelir += Number(t.amount)||0;
+      else gider += Number(t.amount)||0;
+    });
+    const kiraToplam = Object.values(state.rentals).reduce((s,r) => s + (Number(r.amount)||0), 0);
+    const krediToplam = Object.values(state.loans).reduce((s,l) => {
+      const {remaining} = loanRemaining(l);
+      return s + (remaining > 0 ? (Number(l.monthlyPayment)||0) : 0);
+    }, 0);
+    return {
+      gelir: gelir + kiraToplam,
+      gider: gider + krediToplam,
+      islemGelir: gelir, islemGider: gider,
+      kiraToplam, krediToplam
+    };
+  }
+
+  // ---------------- Render: Özet ----------------
+  function renderOzet(){
+    const mk = currentMonthKey();
+    $('ozetAy').textContent = monthLabel(mk);
+    const totals = monthTotals(mk);
+    const net = totals.gelir - totals.gider;
+    const kalanBorc = Object.values(state.loans).reduce((s,l) => s + loanRemaining(l).remainingAmount, 0);
+
+    $('statGelir').textContent = formatCurrency(totals.gelir);
+    $('statGider').textContent = formatCurrency(totals.gider);
+    const netEl = $('statNet');
+    netEl.textContent = formatCurrency(net);
+    netEl.className = 'stat-value ' + (net >= 0 ? 'income' : 'expense');
+    $('statBorc').textContent = formatCurrency(kalanBorc);
+
+    // Bu ay ödenecek krediler
+    const loanEntries = Object.entries(state.loans).filter(([,l]) => loanRemaining(l).remaining > 0);
+    const krediWrap = $('ozetKrediListe');
+    if(loanEntries.length === 0){
+      krediWrap.innerHTML = emptyState('Kredi kaydı yok', 'Krediler sekmesinden kredi ekleyerek takibe başlayabilirsin.');
+    } else {
+      krediWrap.innerHTML =
+        `<div class="ledger-row head ozet-row"><div>Kredi</div><div>Aylık Taksit</div><div>Kalan Taksit</div></div>` +
+        loanEntries.map(([, l]) => {
+          const {remaining} = loanRemaining(l);
+          return `<div class="ledger-row ozet-row">
+            <div class="cell-main"><strong>${escapeHtml(l.name)}</strong></div>
+            <div class="amount cell-amt expense">${formatCurrency(l.monthlyPayment)}</div>
+            <div class="cell-sub">${remaining} taksit</div>
+          </div>`;
+        }).join('');
+    }
+
+    // Sabit kira gelirleri
+    const rentalEntries = Object.entries(state.rentals);
+    const kiraWrap = $('ozetKiraListe');
+    if(rentalEntries.length === 0){
+      kiraWrap.innerHTML = emptyState('Kira geliri yok', 'Kira Gelirleri sekmesinden mülk ekleyebilirsin.');
+    } else {
+      kiraWrap.innerHTML =
+        `<div class="ledger-row head ozet-row"><div>Kiracı / Mülk</div><div>Aylık Tutar</div><div></div></div>` +
+        rentalEntries.map(([, r]) => `<div class="ledger-row ozet-row">
+            <div class="cell-main">
+              <strong>${escapeHtml(r.tenant || 'Belirtilmedi')}</strong>
+              <div style="font-size:12px;color:var(--muted);">${escapeHtml(r.property)}</div>
+            </div>
+            <div class="amount cell-amt income">${formatCurrency(r.amount)}</div>
+            <div></div>
+          </div>`).join('');
+    }
+  }
+
+  function emptyState(title, sub){
+    return `<div class="empty-state"><strong>${escapeHtml(title)}</strong>${escapeHtml(sub)}</div>`;
+  }
+
+  // ---------------- Render: Gelir / Gider ----------------
+  function renderGG(){
+    const monthFilter = $('ggAyFiltre').value;
+    const typeFilter = $('ggTurFiltre').value;
+    const wrap = $('ggListe');
+
+    let entries = Object.entries(state.transactions);
+    if(monthFilter) entries = entries.filter(([,t]) => (t.date || '').slice(0,7) === monthFilter);
+    if(typeFilter) entries = entries.filter(([,t]) => t.type === typeFilter);
+    entries.sort((a,b) => (b[1].date || '').localeCompare(a[1].date || ''));
+
+    if(entries.length === 0){
+      wrap.innerHTML = emptyState('Hareket yok', 'Sağ üstteki “+ Hareket Ekle” ile gelir veya gider ekleyebilirsin.');
+      return;
+    }
+
+    wrap.innerHTML =
+      `<div class="ledger-row head gg-row"><div>Tarih</div><div>Tür</div><div>Açıklama / Kategori</div><div>Tutar</div><div></div></div>` +
+      entries.map(([id, t]) => `
+        <div class="ledger-row gg-row">
+          <div class="cell-date">${formatDate(t.date)}</div>
+          <div class="cell-type"><span class="tag ${t.type}">${t.type === 'gelir' ? 'Gelir' : 'Gider'}</span></div>
+          <div class="cell-desc">
+            <div>${escapeHtml(t.description || t.category)}</div>
+            ${t.description ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(t.category)}</div>` : ''}
+          </div>
+          <div class="amount cell-amt ${t.type}">${t.type === 'gider' ? '-' : '+'}${formatCurrency(t.amount)}</div>
+          <div class="row-actions cell-acts">
+            <button class="icon-btn" data-edit="tx" data-id="${id}" title="Düzenle">✎</button>
+            <button class="icon-btn danger" data-del="transactions" data-id="${id}" title="Sil">✕</button>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  $('ggAyFiltre').addEventListener('change', renderGG);
+  $('ggTurFiltre').addEventListener('change', renderGG);
+  $('ggEkleBtn').addEventListener('click', () => openTxModal());
+  $('ggExportBtn').addEventListener('click', exportCSV);
+
+  function exportCSV(){
+    const rows = [['Tarih','Tür','Kategori','Açıklama','Tutar']];
+    Object.values(state.transactions)
+      .sort((a,b) => (a.date||'').localeCompare(b.date||''))
+      .forEach(t => rows.push([t.date||'', t.type||'', t.category||'', t.description||'', t.amount||0]));
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `hesap_cetveli_${state.nickname}_hareketler.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---------------- Render: Krediler ----------------
+  function renderKrediler(){
+    const wrap = $('krediListe');
+    const entries = Object.entries(state.loans);
+    if(entries.length === 0){
+      wrap.innerHTML = emptyState('Kredi kaydı yok', '“+ Kredi Ekle” ile bankandan çektiğin kredileri takip etmeye başla.');
+      return;
+    }
+    entries.sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
+    wrap.innerHTML = entries.map(([id, l]) => {
+      const total = Number(l.totalInstallments)||0;
+      const paid = Math.min(Number(l.paidInstallments)||0, total);
+      const {remaining, remainingAmount} = loanRemaining(l);
+      const pct = total > 0 ? Math.round((paid/total)*100) : 0;
+      return `
+        <div class="kredi-card">
+          <div class="kredi-top">
+            <div>
+              <p class="kredi-name">${escapeHtml(l.name)}</p>
+              ${l.note ? `<div class="kredi-note">${escapeHtml(l.note)}</div>` : ''}
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" data-edit="loan" data-id="${id}" title="Düzenle">✎</button>
+              <button class="icon-btn danger" data-del="loans" data-id="${id}" title="Sil">✕</button>
+            </div>
+          </div>
+          <div class="kredi-stats">
+            <div><div class="kredi-stat-label">Aylık Taksit</div><div class="kredi-stat-value">${formatCurrency(l.monthlyPayment)}</div></div>
+            <div><div class="kredi-stat-label">Ödenen / Toplam Taksit</div><div class="kredi-stat-value">${paid} / ${total}</div></div>
+            <div><div class="kredi-stat-label">Kalan Taksit</div><div class="kredi-stat-value">${remaining}</div></div>
+            <div><div class="kredi-stat-label">Kalan Toplam Ödeme</div><div class="kredi-stat-value">${formatCurrency(remainingAmount)}</div></div>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
+          <div class="progress-label">%${pct} tamamlandı</div>
+          <div class="kredi-actions">
+            ${remaining > 0 ? `<button class="btn small" data-pay="${id}">Bu Ayın Taksitini Öde</button>` : `<span class="tag income">Kredi kapandı</span>`}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  $('krediEkleBtn').addEventListener('click', () => openLoanModal());
+
+  // ---------------- Render: Kira Gelirleri ----------------
+  function renderKira(){
+    const wrap = $('kiraListe');
+    const entries = Object.entries(state.rentals);
+    if(entries.length === 0){
+      wrap.innerHTML = emptyState('Kira geliri yok', '“+ Kira Geliri Ekle” ile mülklerinden elde ettiğin geliri kaydet.');
+      return;
+    }
+    wrap.innerHTML =
+      `<div class="ledger-row head kira-row"><div>Kiracı / Mülk Detayı</div><div>Aylık Tutar</div><div>Ödeme Günü</div><div></div></div>` +
+      entries.map(([id, r]) => `
+        <div class="ledger-row kira-row">
+          <div class="cell-main">
+            <strong>${escapeHtml(r.tenant || 'Belirtilmedi')}</strong>
+            <div style="font-size:12.5px;color:var(--muted); margin-top:2px;">${escapeHtml(r.property)}</div>
+            ${r.note ? `<div style="font-size:11.5px;color:var(--muted);">${escapeHtml(r.note)}</div>` : ''}
+          </div>
+          <div class="amount cell-amt income">${formatCurrency(r.amount)}</div>
+          <div class="cell-sub">${r.paymentDay ? 'Her ayın ' + r.paymentDay + '. günü' : '—'}</div>
+          <div class="row-actions cell-acts">
+            <button class="icon-btn" data-edit="rental" data-id="${id}" title="Düzenle">✎</button>
+            <button class="icon-btn danger" data-del="rentals" data-id="${id}" title="Sil">✕</button>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  $('kiraEkleBtn').addEventListener('click', () => openRentalModal());
+
+  // ---------------- Delegated row actions ----------------
+  document.addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('[data-edit]');
+    const delBtn = e.target.closest('[data-del]');
+    const payBtn = e.target.closest('[data-pay]');
+
+    if(editBtn){
+      const id = editBtn.dataset.id;
+      const kind = editBtn.dataset.edit;
+      if(kind === 'tx') openTxModal(id);
+      if(kind === 'loan') openLoanModal(id);
+      if(kind === 'rental') openRentalModal(id);
+    }
+
+    if(delBtn){
+      const id = delBtn.dataset.id;
+      const path = delBtn.dataset.del; // transactions | loans | rentals
+      if(!confirm('Bu kaydı silmek istediğine emin misin?')) return;
+      try{
+        await dbDelete(`users/${state.userKey}/${path}/${id}`);
+        delete state[path][id];
+        renderAll();
+        toast('Kayıt silindi.');
+      }catch(err){ toast('Silinemedi: ' + err.message, true); }
+    }
+
+    if(payBtn){
+      const id = payBtn.dataset.pay;
+      const loan = state.loans[id];
+      const total = Number(loan.totalInstallments)||0;
+      const paid = Math.min((Number(loan.paidInstallments)||0) + 1, total);
+      try{
+        await dbPatch(`users/${state.userKey}/loans/${id}`, {paidInstallments: paid});
+        state.loans[id].paidInstallments = paid;
+        renderAll();
+        toast('Taksit ödendi olarak işaretlendi.');
+      }catch(err){ toast('Güncellenemedi: ' + err.message, true); }
+    }
+  });
+
+  // ---------------- Modal: generic ----------------
+  const modalOverlay = $('modalOverlay');
+  const modalBox = $('modalBox');
+
+  function closeModal(){
+    modalOverlay.classList.add('hidden');
+    modalBox.innerHTML = '';
+  }
+  modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
+
+  function openModalWith(html){
+    modalBox.innerHTML = html;
+    modalOverlay.classList.remove('hidden');
+  }
+
+  // ---- Transaction modal ----
+  function openTxModal(id){
+    const t = id ? state.transactions[id] : null;
+    const isEdit = !!t;
+    const datalist = (t && t.type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI);
+
+    openModalWith(`
+      <h3>${isEdit ? 'Hareketi Düzenle' : 'Yeni Gelir / Gider Ekle'}</h3>
+      <form id="txForm">
+        <div class="field">
+          <label>Tür</label>
+          <div class="field-row">
+            <select id="txType" class="filter" style="width:100%;">
+              <option value="gelir" ${t && t.type==='gelir' ? 'selected':''}>Gelir</option>
+              <option value="gider" ${t && t.type==='gider' ? 'selected':''}>Gider</option>
+            </select>
+            <input type="date" id="txDate" value="${t ? t.date : new Date().toISOString().slice(0,10)}" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="txCategory">Kategori</label>
+          <input type="text" id="txCategory" list="txCatList" value="${escapeHtml(t ? t.category : '')}" placeholder="örn. Market" required>
+          <datalist id="txCatList">${datalist.map(c => `<option value="${c}">`).join('')}</datalist>
+        </div>
+        <div class="field">
+          <label for="txDesc">Açıklama (opsiyonel)</label>
+          <input type="text" id="txDesc" value="${escapeHtml(t ? (t.description||'') : '')}" placeholder="örn. Temmuz market alışverişi">
+        </div>
+        <div class="field">
+          <label for="txAmount">Tutar (₺)</label>
+          <input type="number" id="txAmount" min="0" step="0.01" value="${t ? t.amount : ''}" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="txCancel">Vazgeç</button>
+          <button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
+        </div>
+      </form>
+    `);
+
+    $('txCategory').addEventListener('focus', () => {
+      const type = $('txType').value;
+      const list = type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI;
+      $('txCatList').innerHTML = list.map(c => `<option value="${c}">`).join('');
+    });
+    $('txType').addEventListener('change', () => {
+      const type = $('txType').value;
+      const list = type === 'gider' ? GIDER_KATEGORILERI : GELIR_KATEGORILERI;
+      $('txCatList').innerHTML = list.map(c => `<option value="${c}">`).join('');
+    });
+
+    $('txCancel').addEventListener('click', closeModal);
+    $('txForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        type: $('txType').value,
+        date: $('txDate').value,
+        category: $('txCategory').value.trim(),
+        description: $('txDesc').value.trim(),
+        amount: Number($('txAmount').value)
+      };
+      try{
+        if(isEdit){
+          await dbPatch(`users/${state.userKey}/transactions/${id}`, payload);
+          state.transactions[id] = payload;
+          toast('Hareket güncellendi.');
+        } else {
+          const res = await dbPush(`users/${state.userKey}/transactions`, payload);
+          state.transactions[res.name] = payload;
+          toast('Hareket eklendi.');
+        }
+        closeModal();
+        renderAll();
+      }catch(err){ toast('Kaydedilemedi: ' + err.message, true); }
+    });
+  }
+
+  // ---- Loan modal ----
+  function openLoanModal(id){
+    const l = id ? state.loans[id] : null;
+    const isEdit = !!l;
+    openModalWith(`
+      <h3>${isEdit ? 'Krediyi Düzenle' : 'Yeni Kredi Ekle'}</h3>
+      <form id="loanForm">
+        <div class="field">
+          <label for="loanName">Kredi adı / Banka</label>
+          <input type="text" id="loanName" value="${escapeHtml(l ? l.name : '')}" placeholder="örn. İş Bankası İhtiyaç Kredisi" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="loanMonthly">Aylık Taksit (₺)</label>
+            <input type="number" id="loanMonthly" min="0" step="0.01" value="${l ? l.monthlyPayment : ''}" required>
+          </div>
+          <div class="field">
+            <label for="loanTotalCount">Toplam Taksit Sayısı</label>
+            <input type="number" id="loanTotalCount" min="1" step="1" value="${l ? l.totalInstallments : ''}" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="loanPaidCount">Ödenen Taksit Sayısı</label>
+          <input type="number" id="loanPaidCount" min="0" step="1" value="${l ? (l.paidInstallments||0) : 0}" required>
+        </div>
+        <div class="field">
+          <label for="loanNote">Not (opsiyonel)</label>
+          <input type="text" id="loanNote" value="${escapeHtml(l ? (l.note||'') : '')}" placeholder="örn. Araç kredisi">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="loanCancel">Vazgeç</button>
+          <button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
+        </div>
+      </form>
+    `);
+
+    $('loanCancel').addEventListener('click', closeModal);
+    $('loanForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const total = Number($('loanTotalCount').value);
+      let paid = Number($('loanPaidCount').value);
+      if(paid > total) paid = total;
+      const payload = {
+        name: $('loanName').value.trim(),
+        monthlyPayment: Number($('loanMonthly').value),
+        totalInstallments: total,
+        paidInstallments: paid,
+        note: $('loanNote').value.trim()
+      };
+      try{
+        if(isEdit){
+          await dbPatch(`users/${state.userKey}/loans/${id}`, payload);
+          state.loans[id] = payload;
+          toast('Kredi güncellendi.');
+        } else {
+          const res = await dbPush(`users/${state.userKey}/loans`, payload);
+          state.loans[res.name] = payload;
+          toast('Kredi eklendi.');
+        }
+        closeModal();
+        renderAll();
+      }catch(err){ toast('Kaydedilemedi: ' + err.message, true); }
+    });
+  }
+
+  // ---- Rental modal ----
+  function openRentalModal(id){
+    const r = id ? state.rentals[id] : null;
+    const isEdit = !!r;
+    openModalWith(`
+      <h3>${isEdit ? 'Kira Gelirini Düzenle' : 'Yeni Kira Geliri Ekle'}</h3>
+      <form id="rentalForm">
+        <div class="field">
+          <label for="rentalProperty">Mülk adı / adresi</label>
+          <input type="text" id="rentalProperty" value="${escapeHtml(r ? r.property : '')}" placeholder="örn. Kadıköy Daire" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="rentalTenant">Kiracı</label>
+            <input type="text" id="rentalTenant" value="${escapeHtml(r ? (r.tenant||'') : '')}" placeholder="örn. Ayşe Yılmaz">
+          </div>
+          <div class="field">
+            <label for="rentalDay">Ödeme Günü</label>
+            <input type="number" id="rentalDay" min="1" max="31" value="${r ? (r.paymentDay||'') : ''}" placeholder="örn. 5">
+          </div>
+        </div>
+        <div class="field">
+          <label for="rentalAmount">Aylık Kira Tutarı (₺)</label>
+          <input type="number" id="rentalAmount" min="0" step="0.01" value="${r ? r.amount : ''}" required>
+        </div>
+        <div class="field">
+          <label for="rentalNote">Not (opsiyonel)</label>
+          <input type="text" id="rentalNote" value="${escapeHtml(r ? (r.note||'') : '')}" placeholder="örn. 2+1, 3. kat">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="rentalCancel">Vazgeç</button>
+          <button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
+        </div>
+      </form>
+    `);
+
+    $('rentalCancel').addEventListener('click', closeModal);
+    $('rentalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        property: $('rentalProperty').value.trim(),
+        tenant: $('rentalTenant').value.trim(),
+        paymentDay: $('rentalDay').value ? Number($('rentalDay').value) : null,
+        amount: Number($('rentalAmount').value),
+        note: $('rentalNote').value.trim()
+      };
+      try{
+        if(isEdit){
+          await dbPatch(`users/${state.userKey}/rentals/${id}`, payload);
+          state.rentals[id] = payload;
+          toast('Kira geliri güncellendi.');
+        } else {
+          const res = await dbPush(`users/${state.userKey}/rentals`, payload);
+          state.rentals[res.name] = payload;
+          toast('Kira geliri eklendi.');
+        }
+        closeModal();
+        renderAll();
+      }catch(err){ toast('Kaydedilemedi: ' + err.message, true); }
+    });
+  }
+
+  // ---------------- Init ----------------
+  tryAutoLogin();
+
 })();
 </script>
 </body>
