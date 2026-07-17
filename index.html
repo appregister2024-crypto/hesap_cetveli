@@ -121,7 +121,7 @@
     margin-bottom: 6px;
     letter-spacing: 0.01em;
   }
-  .field input{
+  .field input, .field select{
     width: 100%;
     padding: 11px 12px;
     border: 1.5px solid var(--rule-strong);
@@ -130,7 +130,7 @@
     font-size: 15px;
     color: var(--ink);
   }
-  .field input:focus{
+  .field input:focus, .field select:focus{
     border-color: var(--gold);
   }
   .field-hint{
@@ -318,6 +318,8 @@
   .stat-card.income::before{ background: var(--income); }
   .stat-card.expense::before{ background: var(--expense); }
   .stat-card.net::before{ background: var(--gold); }
+  .stat-card.wealth::before{ background: #3b82f6; } /* Yeni Servet Rengi */
+  
   .stat-label{
     font-size: 11.5px;
     text-transform: uppercase;
@@ -335,6 +337,7 @@
   }
   .stat-value.income{ color: var(--income); }
   .stat-value.expense{ color: var(--expense); }
+  .stat-value.wealth{ color: #1d4ed8; }
 
   /* ---------- Section header / actions ---------- */
   .section-head{
@@ -412,7 +415,7 @@
     padding-bottom: 10px;
   }
   
-  /* Daha orantılı kolon genişlikleri (Özet tablosu için Tarih kolonu eklendi) */
+  /* Daha orantılı kolon genişlikleri */
   .gg-row{ grid-template-columns: 100px 110px 1fr 130px 80px; }
   .kredi-card{
     padding: 18px 22px 18px 58px;
@@ -420,9 +423,8 @@
   }
   .kredi-card:last-child{ border-bottom:none; }
   .kira-row{ grid-template-columns: 1fr 130px 130px 80px; }
-  
-  /* Özet satırı artık 4 kolonlu: İsim | Tarih | Tutar | Ekstra(Kalan) */
   .ozet-row{ grid-template-columns: 1fr 130px 140px 100px; }
+  .varlik-row{ grid-template-columns: 1fr 130px 130px 140px 80px; } /* Varlıklar tablosu */
 
   .amount{ font-family: var(--font-mono); font-weight:600; text-align:right; }
   .amount.income{ color: var(--income); }
@@ -438,6 +440,7 @@
   }
   .tag.income{ background: var(--income-bg); color: var(--income); }
   .tag.expense{ background: var(--expense-bg); color: var(--expense); }
+  .tag.neutral{ background: #e0f2fe; color: #0369a1; }
   .row-actions{ display:flex; gap:6px; justify-content:flex-end; }
   .icon-btn{
     background: transparent;
@@ -625,7 +628,7 @@
     .ledger-row.head { display: none !important; }
     
     /* MASAÜSTÜ SÜTUNLARINI KESİNLİKLE EZ VE 2 KOLONA İNDİR */
-    .ledger-row, .gg-row, .kira-row, .ozet-row {
+    .ledger-row, .gg-row, .kira-row, .ozet-row, .varlik-row {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) auto !important;
         gap: 6px 10px !important;
@@ -670,7 +673,7 @@
       <div class="passbook-inner">
         <p class="passbook-eyebrow">Hesap Defteri</p>
         <h1 class="passbook-title">hesap_cetveli</h1>
-        <p class="passbook-sub">Gelirini, giderini, kredilerini ve kira gelirlerini tek defterde tut. Kullanıcı adın ve kodunla defterine ulaş.</p>
+        <p class="passbook-sub">Gelirini, giderini, kredilerini, kira gelirlerini ve yatırımlarını tek defterde tut.</p>
 
         <div id="loginError" class="login-error hidden"></div>
 
@@ -706,6 +709,7 @@
         <button class="nav-btn" data-view="gg"><span class="num">02</span> Gelir / Gider</button>
         <button class="nav-btn" data-view="krediler"><span class="num">03</span> Krediler</button>
         <button class="nav-btn" data-view="kira"><span class="num">04</span> Kira Gelirleri</button>
+        <button class="nav-btn" data-view="varliklar"><span class="num">05</span> Varlık & Yatırım</button>
       </nav>
       <div class="sidebar-footer">
         <div class="sidebar-user">Oturum<strong id="sidebarNick">—</strong></div>
@@ -732,12 +736,20 @@
             <p class="stat-value expense" id="statGider">₺0</p>
           </div>
           <div class="stat-card net">
-            <p class="stat-label">Net Durum</p>
+            <p class="stat-label">Net Durum (Aylık)</p>
             <p class="stat-value" id="statNet">₺0</p>
           </div>
-          <div class="stat-card">
+          <div class="stat-card wealth">
+            <p class="stat-label">Toplam Varlık</p>
+            <p class="stat-value wealth" id="statVarlikToplam">₺0</p>
+          </div>
+          <div class="stat-card expense">
             <p class="stat-label">Kalan Kredi Borcu</p>
-            <p class="stat-value" id="statBorc">₺0</p>
+            <p class="stat-value expense" id="statBorc">₺0</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Gerçek Net Servet</p>
+            <p class="stat-value" id="statNetServet">₺0</p>
           </div>
         </div>
 
@@ -805,6 +817,24 @@
         </div>
         <div class="ledger" id="kiraListe"></div>
       </section>
+
+      <!-- ---- VARLIKLAR & YATIRIMLAR ---- -->
+      <section id="view-varliklar" class="view hidden">
+        <div class="topbar">
+          <div>
+            <h1>Varlık & Yatırım</h1>
+            <div class="topbar-sub">Kasa, Kripto, Borsa, BES ve diğer tüm birikimlerin</div>
+          </div>
+        </div>
+        <div class="section-head">
+          <h2>Mevcut Varlıklar</h2>
+          <div class="head-actions">
+            <button class="btn" id="varlikEkleBtn">+ Varlık Ekle</button>
+          </div>
+        </div>
+        <div class="ledger" id="varlikListe"></div>
+      </section>
+
     </main>
   </div>
 
@@ -825,8 +855,9 @@
   const REMEMBER_KEY = "hesap_cetveli_remember";
 
   const GELIR_KATEGORILERI = ["Maaş","Kira Geliri","Ek Gelir","Yatırım Getirisi","Diğer Gelir"];
-  // Kredi Kartı kategorisi eklendi
   const GIDER_KATEGORILERI = ["Fatura","Market","Ulaşım","Sağlık","Eğitim","Eğlence","Kredi Taksidi","Kredi Kartı","Diğer Gider"];
+  // Yeni Varlık Kategorileri
+  const VARLIK_KATEGORILERI = ["Kasa (Nakit)", "Banka Hesabı", "Kripto", "Borsa", "BES", "Altın / Döviz", "Diğer"];
 
   let state = {
     userKey: null,
@@ -834,6 +865,7 @@
     transactions: {},
     loans: {},
     rentals: {},
+    assets: {}, // Yeni varlık state'i
     activeView: "ozet"
   };
 
@@ -983,7 +1015,7 @@
 
   $('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem(REMEMBER_KEY);
-    state = {userKey:null, nickname:null, transactions:{}, loans:{}, rentals:{}, activeView:'ozet'};
+    state = {userKey:null, nickname:null, transactions:{}, loans:{}, rentals:{}, assets:{}, activeView:'ozet'};
     $('dashboard').classList.add('hidden');
     $('loginScreen').classList.remove('hidden');
     loginForm.reset();
@@ -992,14 +1024,16 @@
   });
 
   async function loadAllData(){
-    const [tx, loans, rentals] = await Promise.all([
+    const [tx, loans, rentals, assets] = await Promise.all([
       dbGet(`users/${state.userKey}/transactions`),
       dbGet(`users/${state.userKey}/loans`),
-      dbGet(`users/${state.userKey}/rentals`)
+      dbGet(`users/${state.userKey}/rentals`),
+      dbGet(`users/${state.userKey}/assets`)
     ]);
     state.transactions = tx || {};
     state.loans = loans || {};
     state.rentals = rentals || {};
+    state.assets = assets || {};
   }
 
   function enterDashboard(){
@@ -1028,6 +1062,7 @@
     renderGG();
     renderKrediler();
     renderKira();
+    renderVarliklar();
   }
 
   // ---------------- Derived data ----------------
@@ -1052,11 +1087,19 @@
       const {remaining} = loanRemaining(l);
       return s + (remaining > 0 ? (Number(l.monthlyPayment)||0) : 0);
     }, 0);
+    
+    // Varlık ve Servet Hesaplamaları
+    const kalanKrediBorcu = Object.values(state.loans).reduce((s,l) => s + loanRemaining(l).remainingAmount, 0);
+    const toplamVarlik = Object.values(state.assets).reduce((s,a) => s + (Number(a.amount)||0), 0);
+
     return {
       gelir: gelir + kiraToplam,
       gider: gider + krediToplam,
       islemGelir: gelir, islemGider: gider,
-      kiraToplam, krediToplam
+      kiraToplam, krediToplam,
+      kalanKrediBorcu, 
+      toplamVarlik, 
+      netServet: toplamVarlik - kalanKrediBorcu
     };
   }
 
@@ -1066,14 +1109,20 @@
     $('ozetAy').textContent = monthLabel(mk);
     const totals = monthTotals(mk);
     const net = totals.gelir - totals.gider;
-    const kalanBorc = Object.values(state.loans).reduce((s,l) => s + loanRemaining(l).remainingAmount, 0);
 
     $('statGelir').textContent = formatCurrency(totals.gelir);
     $('statGider').textContent = formatCurrency(totals.gider);
+    
     const netEl = $('statNet');
     netEl.textContent = formatCurrency(net);
     netEl.className = 'stat-value ' + (net >= 0 ? 'income' : 'expense');
-    $('statBorc').textContent = formatCurrency(kalanBorc);
+    
+    $('statBorc').textContent = formatCurrency(totals.kalanKrediBorcu);
+    $('statVarlikToplam').textContent = formatCurrency(totals.toplamVarlik);
+    
+    const netServetEl = $('statNetServet');
+    netServetEl.textContent = formatCurrency(totals.netServet);
+    netServetEl.className = 'stat-value ' + (totals.netServet >= 0 ? 'wealth' : 'expense');
 
     // Bu ay ödenecek krediler
     const loanEntries = Object.entries(state.loans).filter(([,l]) => loanRemaining(l).remaining > 0);
@@ -1258,6 +1307,39 @@
 
   $('kiraEkleBtn').addEventListener('click', () => openRentalModal());
 
+  // ---------------- Render: Varlıklar ----------------
+  function renderVarliklar(){
+    const wrap = $('varlikListe');
+    const entries = Object.entries(state.assets);
+    
+    if(entries.length === 0){
+      wrap.innerHTML = emptyState('Varlık kaydı yok', '“+ Varlık Ekle” ile Kasa, Borsa, Kripto, BES vb. birikimlerini ekle.');
+      return;
+    }
+    
+    entries.sort((a,b) => (b[1].amount||0) - (a[1].amount||0));
+    
+    wrap.innerHTML =
+      `<div class="ledger-row head varlik-row"><div>Varlık Adı / Hesap</div><div>Tür</div><div>Son Güncelleme</div><div>Güncel Değer</div><div></div></div>` +
+      entries.map(([id, a]) => `
+        <div class="ledger-row varlik-row">
+          <div class="cell-main">
+            <strong>${escapeHtml(a.name)}</strong>
+            ${a.note ? `<div style="font-size:11.5px;color:var(--muted); margin-top:2px;">${escapeHtml(a.note)}</div>` : ''}
+          </div>
+          <div class="cell-type"><span class="tag neutral">${escapeHtml(a.category)}</span></div>
+          <div class="cell-sub">${formatDate(a.lastUpdated)}</div>
+          <div class="amount cell-amt wealth">${formatCurrency(a.amount)}</div>
+          <div class="row-actions cell-acts">
+            <button class="icon-btn" data-edit="asset" data-id="${id}" title="Düzenle">✎</button>
+            <button class="icon-btn danger" data-del="assets" data-id="${id}" title="Sil">✕</button>
+          </div>
+        </div>
+      `).join('');
+  }
+
+  $('varlikEkleBtn').addEventListener('click', () => openAssetModal());
+
   // ---------------- Delegated row actions ----------------
   document.addEventListener('click', async (e) => {
     const editBtn = e.target.closest('[data-edit]');
@@ -1270,11 +1352,12 @@
       if(kind === 'tx') openTxModal(id);
       if(kind === 'loan') openLoanModal(id);
       if(kind === 'rental') openRentalModal(id);
+      if(kind === 'asset') openAssetModal(id);
     }
 
     if(delBtn){
       const id = delBtn.dataset.id;
-      const path = delBtn.dataset.del; // transactions | loans | rentals
+      const path = delBtn.dataset.del; // transactions | loans | rentals | assets
       if(!confirm('Bu kaydı silmek istediğine emin misin?')) return;
       try{
         await dbDelete(`users/${state.userKey}/${path}/${id}`);
@@ -1394,7 +1477,6 @@
     const l = id ? state.loans[id] : null;
     const isEdit = !!l;
     
-    // Kredi Tarihi Eklendi
     openModalWith(`
       <h3>${isEdit ? 'Krediyi Düzenle' : 'Yeni Kredi Ekle'}</h3>
       <form id="loanForm">
@@ -1520,6 +1602,67 @@
           const res = await dbPush(`users/${state.userKey}/rentals`, payload);
           state.rentals[res.name] = payload;
           toast('Kira geliri eklendi.');
+        }
+        closeModal();
+        renderAll();
+      }catch(err){ toast('Kaydedilemedi: ' + err.message, true); }
+    });
+  }
+
+  // ---- Asset modal ----
+  function openAssetModal(id){
+    const a = id ? state.assets[id] : null;
+    const isEdit = !!a;
+    openModalWith(`
+      <h3>${isEdit ? 'Varlığı Düzenle' : 'Yeni Varlık Ekle'}</h3>
+      <form id="assetForm">
+        <div class="field">
+          <label for="assetName">Varlık Adı / Hesap Adı</label>
+          <input type="text" id="assetName" value="${escapeHtml(a ? a.name : '')}" placeholder="örn. Binance Cüzdan, Garanti BES" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="assetCategory">Tür</label>
+            <select id="assetCategory" class="filter">
+              ${VARLIK_KATEGORILERI.map(c => `<option value="${c}" ${a && a.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label for="assetAmount">Güncel Değer (₺)</label>
+            <input type="number" id="assetAmount" min="0" step="0.01" value="${a ? a.amount : ''}" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="assetNote">Not (opsiyonel)</label>
+          <input type="text" id="assetNote" value="${escapeHtml(a ? (a.note||'') : '')}" placeholder="örn. Altın fonu">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" id="assetCancel">Vazgeç</button>
+          <button type="submit" class="btn">${isEdit ? 'Kaydet' : 'Ekle'}</button>
+        </div>
+      </form>
+    `);
+
+    $('assetCancel').addEventListener('click', closeModal);
+    $('assetForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: $('assetName').value.trim(),
+        category: $('assetCategory').value,
+        amount: Number($('assetAmount').value),
+        note: $('assetNote').value.trim(),
+        lastUpdated: new Date().toISOString()
+      };
+      
+      try{
+        if(isEdit){
+          await dbPatch(`users/${state.userKey}/assets/${id}`, payload);
+          state.assets[id] = payload;
+          toast('Varlık güncellendi.');
+        } else {
+          const res = await dbPush(`users/${state.userKey}/assets`, payload);
+          state.assets[res.name] = payload;
+          toast('Varlık eklendi.');
         }
         closeModal();
         renderAll();
